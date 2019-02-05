@@ -1,0 +1,59 @@
+﻿@model EnglishVideo.Models.User
+<link href="~/Content/MyCss/AboutUser.css" rel="stylesheet" />
+
+<h3>Профиль</h3>
+<hr />
+<div class="container-fluid">
+    <div class="row about-user-content">
+        <div class="col-md-4">
+            <div id="img_avatar">
+
+
+                <img id="avatar" src=@Url.Content(Model.AvatarPath) class="img-fluid" />
+
+                @using (Html.BeginForm("UploadAvatar", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input type="file" name="upload" accept="image/*" id="avatar-input" /><br>
+                    <input type="text" name="idUser"  value="@Model.Id" hidden/>
+                    <input type="submit" value="Загрузить" id="avatar-input-button"/>
+                }
+
+
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div id="info-user">
+                <span class="info-span">@Html.DisplayNameFor(model => model.Email)</span>
+                @Html.DisplayFor(model => model.Email) <br />
+                <span class="info-span"> @Html.DisplayNameFor(model => model.Login) </span>
+                @Html.DisplayFor(model => model.Login) <br />
+                <span class="info-span"> @Html.DisplayNameFor(model => model.Name) </span>
+                @Html.DisplayFor(model => model.Name) <br />
+                <span class="info-span">@Html.DisplayNameFor(model => model.Surname)  </span>
+                @Html.DisplayFor(model => model.Surname) <br />
+                <span class="info-span"> @Html.DisplayNameFor(model => model.DateRegister) </span>
+                @Html.DisplayFor(model => model.DateRegister) <br />
+                     
+                <br />
+                <div class="row">
+                    <div class="col-md-5">
+                        <span>
+
+                            @Html.ActionLink("Редактировать", "EditUser", new { idUser = Model.Id }, new { @class = "btn btn-dark btn-lg btn-block" })
+                        </span>
+                    </div>
+                    <div class="col-md-5">
+                        <span>
+                            @Html.ActionLink("Удалить профиль", "DeleteUser", new { idUser = Model.Id }, new { @class = "btn btn-dark btn-lg btn-block" })
+                        </span>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+

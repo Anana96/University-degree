@@ -1,0 +1,49 @@
+﻿@model IEnumerable<EnglishVideo.Models.VideoUser>
+
+@{
+                /**/
+
+                /**/
+
+                ViewBag.Title = "Index";
+}
+
+<link href="~/Content/MyCss/VideoCatalog.css" rel="stylesheet">
+<link href="~/Content/MyCss/IndexVideoUser.css" rel="stylesheet" />
+
+@{ 
+    if (Model.Count() == 0)
+    {
+        <span class="info">Добавьте свое первое видео</span>
+    }
+    else
+    {
+        <h3>Последние видео:</h3>
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 col-mar">
+                    <a href=" @Url.RouteUrl(new { controller = "VideoUser", action = "Video", id = item.Id })">
+                        <div class="poster">
+                            <img src=@Url.Content(@item.PathPoster) />
+                            <div class="poster-title">
+                                <span>@item.NameVideo</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+        <br />
+    }
+
+using (Html.BeginForm("AddVideoUser", "VideoUser", FormMethod.Get))
+{
+    <div class="form-group">
+        <div class="offset-md-4 col-md-4">
+            <input type="submit" value="Добавить видео" class="btn btn-dark btn-lg btn-block" />
+        </div>
+    </div>
+}
+}
+

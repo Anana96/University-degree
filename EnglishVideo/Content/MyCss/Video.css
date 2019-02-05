@@ -1,0 +1,212 @@
+﻿
+.v-cont {
+    position: relative;
+    outline: none;
+}
+
+
+#but-fullscreen {
+    cursor: pointer;
+    font-size: 18px;
+    border: none;
+    background: black;
+    color: #92979b;
+    outline: none;
+    position: absolute;
+    padding: 5px;
+    top: 0;
+    right: 0;
+}
+
+#display {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-bottom: 6.5%;
+    text-align: center;
+    width: 100%;
+    color: white;
+    font-size: 3vw;
+    padding: 4px;
+}
+
+#subt {
+    display: inline-block;
+    background: #0000008c;
+    cursor: pointer;
+}
+
+.trans {
+    color: burlywood;
+}
+
+
+
+/*Стиль подсказок*/
+/* Проба подсказки */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    opacity: 1;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+    /* Tooltip text */
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        background-color: #34475ee6;
+        font-family: Arial;
+        font-size: 18px;
+        text-align: center;
+        padding: 5px 5px;
+        border-radius: 6px;
+        border: 1px solid #5c6e84;
+        color: white;
+        /* Position the tooltip text */
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        /* Fade in tooltip */
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+        /* Tooltip arrow */
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .tooltip:hover {
+        color: #ff8000;
+    }
+
+#user-mes {
+    font-size: 13px;
+}
+
+#modal, #info-modal {
+    visibility: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 14px;
+    color: #ffffff;
+    border-radius: 28px;
+    background-color: #34475ee6;
+    font-family: Arial;
+    font-size: 22px;
+    font-weight: normal;
+    text-align: center;
+    line-height: 24px;
+    box-sizing: content-box;
+    margin-top: 10px;
+    border: 1px solid #5c6e84;
+    border-radius: 10px;
+}
+
+#button-ok, #button-close {
+    width: 70px;
+    padding: 8px 10px;
+    margin-top: 10px;
+    border: 0;
+    border-radius: 7px;
+    outline: 0;
+    color: black;
+    background: rgb(39, 206, 67);
+    font-family: arial;
+    font-size: 14px;
+    font-weight: normal;
+    text-transform: none;
+    line-height: 18px;
+    /* vertical-align: baseline; */
+    /* display: block; */
+    cursor: pointer;
+}
+
+#button-close {
+    background-color: rgb(190, 18, 18);
+}
+
+#comment-textarea{
+   margin-bottom:4px;
+}
+
+.comment {
+    display: block;
+    margin: 10px;
+    padding: 5px;
+    position: relative;
+    width: 90%;
+    border-radius: 10px;
+}
+
+    .comment:nth-child(odd) {
+        background-color: lightsalmon;
+        float: left;
+        text-align: left;
+    }
+
+    .comment:nth-child(even) {
+        background-color: #473955;
+        float: right;
+        text-align: right;
+    }
+
+    .comment:nth-child(odd) .comment-delete {
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: #a5b9cf;
+        margin: 0 10px;
+    }
+
+    .comment:nth-child(even) .comment-delete {
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #a5b9cf;
+        margin: 0 10px;
+    }
+
+    .comment:nth-child(even) .comment-author {
+        color: mediumpurple;
+    }
+
+    .comment:nth-child(odd) .comment-author {
+        color: #fadcaf;
+    }
+
+.comment-date {
+    font-size: 80%;
+}
+
+.comment-text {
+    margin: 10px;
+    display: block;
+}
+
+
+.comment img {
+    border-radius: 40px;
+    width: 60px;
+    height: 60px;
+}

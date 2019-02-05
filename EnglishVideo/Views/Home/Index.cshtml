@@ -1,0 +1,40 @@
+﻿@model PagedList.IPagedList<EnglishVideo.Models.Video>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Начальная страница";
+
+}
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/MyCss/VideoCatalog.css" rel="stylesheet">
+@if (!User.Identity.IsAuthenticated)
+{
+
+    <h4>Зарегистрируйтесь и вы сможете сохранять переводы слов и добавлять свои видео.</h4>
+    <br />
+}
+
+<h2>Последние видео:</h2>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-6 col-mar">
+            <a href=" @Url.RouteUrl(new { controller = "Home", action = "Video", id = item.Id })">
+                <div class="poster">
+                    <img src=@Url.Content(@item.PathPoster) />
+                    <div class="poster-title">
+                        <span>@item.NameVideo</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+<br />
+<br />
+
+
+<div class="page-nav">
+    @Html.PagedListPager(Model, page => Url.Action("Index",
+            new { page }))
+</div>

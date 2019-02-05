@@ -1,0 +1,264 @@
+﻿@import url(http://meyerweb.com/eric/tools/css/reset/reset.css);
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC|Indie+Flower|Open+Sans+Condensed:300');
+@import url('https://fonts.googleapis.com/css?family=Poiret+One|Raleway');
+@import url('https://fonts.googleapis.com/css?family=Fredericka+the+Great|Yesteryear');
+
+
+
+@font-face {
+    font-family: Reklame;
+    src: url("../Font/ReklameScript-Regular_DEMO.otf") format("opentype");
+}
+
+
+
+
+body {
+    background: rgba(33, 34, 43, 0.804) url('../Images/back.jpg') 100% 100% no-repeat; /* Добавляем фон */
+    background-size: cover;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 30px;
+    color: white;
+    -webkit-font-smoothing: antialiased;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cont {
+    background: #a5b9cf;
+    min-height: 500px;
+}
+
+.head {
+    height: 150px;
+    background-color: rgba(33, 34, 43, 0.804);
+}
+
+
+li a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Amatic SC';
+}
+
+
+h6 {
+    font-size: 10px;
+}
+
+h5 {
+    font-size: 20px;
+}
+
+
+h4 {
+    font-size: 30px;
+}
+
+h3{
+    font-size:40px;
+}
+
+h2{
+    font-size:50px;
+}
+
+h1{
+    font-size:60px;
+}
+
+
+
+.dectiption{
+    font-size:28px;
+}
+
+.video-space > video {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    background: black;
+}
+
+.video-space{
+    font-size:0;
+}
+/* HEAD */
+.logo-aut {
+    color: #e6deca;
+    font-family: 'Poiret One';
+    font-size: 22px;
+    position: relative;
+}
+
+
+.logo-aut img {
+    height: 23px;
+    border-radius: 20px;
+}
+
+.logo-aut a {
+    color: inherit;
+}
+
+.btn:hover {
+    color: inherit;
+}
+
+.dropdown-menu {
+    background: rgba(180, 199, 199, 0.623);
+    font-family: 'Poiret One';
+    font-size: 20px;
+    color: white;
+    transform: translateZ(0);
+}
+
+
+dropdown-item:hover {
+    background: turquoise;
+}
+
+
+.logo-text a{
+    color: #e6deca;
+    font-weight: bold;
+    text-shadow: rgb(20, 21, 39) 5px 2px 2px;
+    font-family: 'Reklame';
+    letter-spacing: 7px;
+}
+
+.logo-text a:hover {
+        text-decoration: none;
+        color: #e6deca;
+}
+
+
+
+
+/* BODY */
+
+
+/* MENU */
+
+.menu {
+    /*box-shadow: 23;*/
+    font-family: 'Poiret One';
+    height: 60px;
+    margin-bottom: 50px;
+}
+
+    .menu li {
+        /*display: inline;*/
+        text-align: center;
+        background: #40667c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        /* padding: 50px 0 50px 0; */
+        box-shadow: 1px 3px 3px -3px #000000 inset;
+    }
+
+        .menu li:hover {
+            transition: all 0.4s ease 0s;
+            box-shadow: -7px 13px 35px 1px rgba(0,0,0,0.42);
+        }
+
+
+
+    .menu .active {
+        background: #c47a70;
+    }
+
+
+
+/* Footer */
+
+.foot {
+    padding: 30px 0;
+    background-color: #2f2e2e;
+}
+
+
+footer {
+    font-family: 'Amatic SC';
+    font-size: 25px;
+    color: #ffffff;
+}
+
+footer img {
+    height: 30px;
+}
+
+.fcont {
+    box-shadow: -10px -10px 35px 1px rgba(0,0,0,0.42);
+}
+
+
+label {
+    font-family: 'Open Sans Condensed'
+}
+
+.ml-auto{
+    padding-right:15px;
+}
+
+/*  MEDIA */
+
+@media screen and (min-width: 600px) {
+    .logo-text a{
+        font-size: 100px;
+    }
+
+    .menu li  {
+        font-size: 25px;
+    }
+
+    .menu li:hover {
+        font-size: 27px;
+    }
+}
+
+@media screen and (min-width: 500px) and (max-width: 599px) {
+    .logo-text a{
+        font-size: 15vw;
+    }
+
+    .logo-text {
+        margin-top: 2vh;
+    }
+
+    .menu li  {
+        font-size: 20px;
+    }
+
+    .menu li:hover {
+        font-size: 23px;
+    }
+}
+
+@media screen and (min-width: 300px) and (max-width: 500px) {
+    .logo-text a{
+        font-size: 15vw;
+    }
+    .logo-text {
+        margin-top: 4vh;
+    }
+
+    .menu li {
+        font-size: 18px;
+    }
+
+    .menu li:hover {
+        font-size: 20px;
+    }
+}

@@ -1,0 +1,92 @@
+﻿
+<link href="~/Content/MyCss/Video.css" rel="stylesheet" />
+
+<h1>@ViewBag.curVideo.NameVideo</h1>
+<br />
+
+<div class="container-fluid">
+    <div class=" row">
+        <div class="col-lg-12 ">
+            <div class="embed-responsive embed-responsive-16by9 video-space v-cont">
+                <video controls="controls" controlsList=" nodownload nofullscreen noremoteplayback" preload="auto" poster="@Url.Content(ViewBag.curVideo.PathPoster)">
+
+                    @if (ViewBag.curVideo.PathVideoMp4 != null)
+                    {
+                        <source src=@Url.Content(@ViewBag.curVideo.PathVideoMp4) type="video/mp4"> <!-- MP4 для Safari, IE9, iPhone, iPad, Android, и Windows Phone 7 -->
+                    }
+
+                    @if (ViewBag.curVideo.PathVideoMkv != null)
+                    {
+                        <source src=@Url.Content(@ViewBag.curVideo.PathVideoMkv) type='video/x-matroska'>
+                    }
+
+
+                    @if (ViewBag.curVideo.PathVideoWebm != null)
+                    {
+                        <source src=@Url.Content(@ViewBag.curVideo.PathVideoWebm) type="video/webm"> <!-- WebM/VP8 для Firefox4, Opera, и Chrome -->
+                    }
+
+                    <track kind="metadata" src=@Url.Content(@ViewBag.curVideo.PathSubtitle) default label="English">
+                </video>
+                <div id="display">
+                    <span id="subt"></span>
+                </div>
+                <button id="but-fullscreen" onclick="fullScreenProb()"><i class="fas fa-arrows-alt"></i></button>
+
+                <div id="modal">
+                    <span id="textWord"></span> <br />
+                    <button id="button-ok" onclick="modalEvent('yes')">Да</button>
+                    <button id="button-close" onclick="modalEvent('no')">Нет</button>
+                </div>
+                <div id="info-modal">
+                    <span id="textWordInfo"></span> <br />
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<br />
+<br />
+<span class="dectiption">@ViewBag.curVideo.Description</span>
+<br />
+<br />
+<br />
+
+@if (User.Identity.IsAuthenticated) { 
+    using (Html.BeginForm("Comment","Home","POST"))
+    {
+        <div class="form-group">
+            <label for="comment-textarea">Ваш комментарий:</label>
+            <textarea class="form-control" rows="3" name="text" id="comment-textarea"></textarea>
+            <input type="text" name="videoId" value="@ViewBag.curVideo.Id" id="videoId" hidden />
+            <input type="submit" name="sent" value="Отправить" class="btn btn-light btn-lg"/>
+        </div>
+    }
+}
+
+    <div id="result">
+        @foreach (var item in ViewBag.curVideo.Comments)
+    {
+        <div class="comment">
+            <img src=@Url.Content(item.User.AvatarPath) alt="avatar" />
+            <span class="comment-author"> @item.User.Login</span>
+            <span class="comment-date"> @item.DateComment</span>
+            <span class="comment-text">@item.Text</span>
+            @if (item.UserId == ViewBag.userId)
+            {
+            @Html.ActionLink("×", "DeleteComment", new { idComment = item.Id, videoId = ViewBag.curVideo.Id }, new { @class = "comment-delete" })
+             }
+
+        </div>
+
+    }
+
+    </div>
+
+
+
+<script src="~/Scripts/myscripts/subtitle.js"></script>

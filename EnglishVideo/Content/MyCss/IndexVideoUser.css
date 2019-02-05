@@ -1,0 +1,9 @@
+﻿.info {
+    display: block;
+    text-align: center;
+    margin: 10px;
+}
+
+    .info a {
+        padding: 10px;
+    }

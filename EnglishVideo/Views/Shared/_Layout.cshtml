@@ -1,0 +1,212 @@
+﻿@using EnglishVideo.Helpers
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>English Video</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1"
+          crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="~/Content/MyCss/Site.css" />
+</head>
+<body>
+
+@*HEADER*@
+<div class="head">
+    <header class="container-fluid ">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 ">
+
+                <div class=" logo-aut text-right ">
+
+                    @if (Request.IsAuthenticated) {
+
+                        <div class"dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" href="">
+                            <div class='fa fa-user-circle'></div>
+                            <span>@User.Identity.Name</span>
+                        </a>
+                        <div class="dropdown-menu text-center dropdown-menu-right " aria-labelledby="dropdownMenuLink">
+                            @Html.ActionLink("Профиль", "AboutUser", "Account", new { area = "" }, new { @class = "dropdown-item" })
+                            @Html.ActionLink("Выход", "Logoff", "Account", new { area = "" }, new { @class = "dropdown-item" })
+                        </div>
+                    </div>
+
+                    } else { 
+                        <p id="log">
+                            @Html.ActionLink("Войти на сайт", "Login", "Account", new { area = "" }, null) |
+                            @Html.ActionLink("Регистрация", "Register", "Account", new { area = "" }, new { @class = "navbar-brand" })
+                        </p>
+                        }
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-11 col-md-10 logo-text">
+                            @Html.ActionLink("English Video", "Index", "Home", new { area = "" }, null)
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+    </div>
+
+
+
+
+     
+                         
+
+
+
+                        @*BODY*@
+                        <div class="container-fluid body-content">
+
+                            <div class="row ">
+                                <div class="col-lg-8 offset-lg-2 cont ">
+
+                                    <ul class="row menu">
+                                        <li class="col @Html.IsSelected(action:"Index" , controller:"Home")">
+                                            @Html.ActionLink("Главная", "Index", "Home")
+                                        </li>
+                                        <li class="col  @Html.IsSelected(action:"Catalog" , controller:"Home")">
+                                            @Html.ActionLink("Каталог", "Catalog", "Home")
+                                        </li>
+
+                                     @if (Request.IsAuthenticated) 
+                                     {
+                                        <li class="col  @Html.IsSelected(action:"#" , controller:"Home")">
+                                            @Html.ActionLink("Словарь", "Dictionary", "Home") @*страница словаря*@
+                                        </li>
+
+                                                                            <li class="col  @Html.IsSelected(action:"Index" , controller:"VideoUser")">
+                                        @Html.ActionLink("Мои видео", "CatalogUser", "VideoUser")
+                                    </li>
+                                     }
+                                      
+
+
+                                    </ul>
+                                    @RenderBody()
+                                </div>
+                            </div>
+                        </div>
+
+
+                        @*FOOTER*@
+                        <footer class="container-fluid">
+                            <div class="row ">
+                                <div class="col-lg-8 offset-lg-2 foot">
+
+
+                                    <div class="d-flex ">
+                                        <div class="ml-auto">
+                                            <img src=@Url.Content("~/Content/Images/logo3.png")>
+                                            <span> Козлова Анна</span>
+                                            <br>
+                                            <span>zzzyyyyy@mail.ru</span>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </footer>
+
+
+
+                        @*@Html.Partial("_LoginPartial")*@
+                        <script src=@Url.Content("~/Scripts/myscripts/format-fonts-popper.js")></script>
+                        @Scripts.Render("~/bundles/jquery")
+                        @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+                        @Scripts.Render("~/bundles/bootstrap")
+                        @*@Scripts.Render("~/bundles/popper")*@
+                        @RenderSection("scripts", required: false)
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title – приложение ASP.NET</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Главная", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
+                    <li>@Html.ActionLink("О программе", "About", "Home")</li>
+                    <li>@Html.ActionLink("Каталог", "Catalog", "Home")</li>
+                </ul>
+            </div>
+            @Html.ActionLink("Войти на сайт", "Login", "Account", new { area = "" }, new { @class = "navbar-brand" })
+            @Html.ActionLink("Регистрация", "Register", "Account", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year – приложение ASP.NET</p>
+        </footer>
+    </div>
+
+
+
+
+    Html.Partial("_LoginPartial")
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    </body>
+    </html>*@

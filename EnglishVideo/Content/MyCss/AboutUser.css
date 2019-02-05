@@ -1,0 +1,44 @@
+﻿#img_avatar {
+    margin-bottom: 30px;
+}
+
+#info-user {
+    margin-top: 60px;
+}
+
+
+.info-span {
+    color: darkslateblue;
+    font-size: 35px;
+}
+
+#button-delete {
+    display: block;
+    text-align: center;
+    margin-bottom: 40px;
+    /* padding-top: 10px; */
+    padding: 10px;
+    color: #ffffff;
+    background: #4f4a71;
+    border-radius: 10px;
+}
+
+#button-edit {
+    padding: 5px;
+    color: white;
+    background: #4f4a71;
+    border-radius: 10px;
+}
+
+#avatar-input {
+    font-size: 25px;
+    color: white;
+}
+
+#avatar-input-button {
+    font-size: 25px;
+}
+
+.about-user-content {
+    margin-bottom: 30px;
+}

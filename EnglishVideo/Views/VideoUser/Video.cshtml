@@ -1,0 +1,76 @@
+﻿@model EnglishVideo.Models.VideoUser
+
+@{
+    ViewBag.Title = "Video";
+}
+<link href="~/Content/MyCss/Video.css" rel="stylesheet" />
+<h1>@Model.NameVideo</h1>
+<br />
+<div class="container-fluid">
+    <div class=" row">
+        <div class="col-lg-12 ">
+            <div class="embed-responsive embed-responsive-16by9 video-space v-cont">
+                <video controls="controls" controlsList=" nodownload nofullscreen noremoteplayback" preload="auto" poster="@Url.Content(Model.PathPoster)">
+
+                    @if (Model.PathVideoMp4 != null)
+                    {
+                        <source src=@Url.Content(Model.PathVideoMp4) type="video/mp4"> <!-- MP4 для Safari, IE9, iPhone, iPad, Android, и Windows Phone 7 -->
+                    }
+
+                    @if (Model.PathVideoMkv != null)
+                    {
+                        <source src=@Url.Content(Model.PathVideoMkv) type='video/x-matroska'>
+                    }
+
+
+                    @if (Model.PathVideoWebm != null)
+                    {
+                        <source src=@Url.Content(Model.PathVideoWebm) type="video/webm"> <!-- WebM/VP8 для Firefox4, Opera, и Chrome -->
+                    }
+
+                    <track kind="metadata" src=@Url.Content(Model.PathSubtitle) default label="English">
+                </video>
+                <div id="display">
+                    <span id="subt"></span>
+                </div>
+                <button id="but-fullscreen" onclick="fullScreenProb()"><i class="fas fa-arrows-alt"></i></button>
+
+                <div id="modal">
+                    <span id="textWord"></span> <br />
+                    <button id="button-ok" onclick="modalEvent('yes')">Да</button>
+                    <button id="button-close" onclick="modalEvent('no')">Нет</button>
+                </div>
+                <div id="info-modal">
+                    <span id="textWordInfo"></span> <br />
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@*</div>*@
+
+
+<br />
+
+
+<br />
+<span class="dectiption">@Model.Description</span>
+<br />
+<br />
+<br />
+
+    @using (Html.BeginForm("DeleteVideo", "VideoUser"))
+    {
+        <div class="form-group">
+            <div class="offset-md-4 col-md-4">
+                <input type="text" name="id" value="@Model.Id" hidden/>
+                <input type="submit" value="Удалить видео" class="btn btn-dark btn-lg btn-block" />
+            </div>
+        </div>
+    }
+
+
+<script src="~/Scripts/myscripts/comment.js"></script>
+<script src="~/Scripts/myscripts/subtitle.js"></script>
+

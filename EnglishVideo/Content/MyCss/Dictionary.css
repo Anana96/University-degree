@@ -1,0 +1,20 @@
+﻿.table-responsive {
+    margin: 30px 0;
+    overflow-x: hidden;
+}
+
+thead {
+    background: #2f2e2ed9;
+}
+
+tbody {
+    background: #787775b8;
+}
+
+a {
+    color: #413f4c;
+}
+
+td {
+    border: 1px solid #dee2e6;
+}

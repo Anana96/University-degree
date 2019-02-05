@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300');
+
+html, body {
+    background: rgba(33, 34, 43, 0.804) url('../Images/back.jpg') 100% 100% no-repeat; /* Добавляем фон */
+    height: 100%;
+    position: relative;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 23px;
+}
+
+form {
+    margin-bottom: 0px;
+}
+
+.block-auth{
+border-radius: 10px;
+display: inline-block;
+background-color: currentColor;
+box-shadow: -14px -10px 19px -13px #000000;
+padding: 0;
+}
+
+.title{
+    display: flex;
+    flex-direction: column;
+}
+
+.title span{
+    color: #cacaca;
+    text-align: center;
+    font-size:40px;
+}
+
+.form-auth{
+    height: 200px;
+    padding:40px 10px;
+    position: relative;
+}
+
+
+.form-auth input{
+    display: block;
+    width: 80%;
+    margin:auto
+}
+
+#submit{
+    height: 40px;
+    outline: none;
+    color: #cacaca;
+    cursor:pointer;
+    border-style: none;
+    background-color: #4b4e66;
+}
+
+#error{
+    position: absolute;
+}
+
+.register {
+    color: #976ba2;
+    font-size: 25px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.register a{
+    color: #976ba2;
+    font-size: 25px;
+}
+
+.register a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+

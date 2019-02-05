@@ -1,0 +1,45 @@
+﻿@model PagedList.IPagedList<EnglishVideo.Models.Video>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/MyCss/VideoCatalog.css" rel="stylesheet">
+
+@{
+    ViewBag.Title = "Каталог";
+}
+
+
+
+
+@using (Html.BeginForm("Catalog", "Home", FormMethod.Get,new { @class = "form-inline" }))
+    {
+         <span class="text">Название видео:</span>  @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+         <input type="submit" class="btn btn-secondary  btn-lg but" value="Поиск" />
+    }
+
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-6 col-mar">
+            <a href=" @Url.RouteUrl(new { controller = "Home", action = "Video", id = item.Id })">
+                <div class="poster">
+                    <img src=@Url.Content(@item.PathPoster) />
+                    <div class="poster-title">
+                        <span>@item.NameVideo</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+<br />
+
+
+
+<br />
+@*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount*@
+
+<div class="page-nav">
+    @Html.PagedListPager(Model, page => Url.Action("Catalog",
+                        new { page }))
+</div>

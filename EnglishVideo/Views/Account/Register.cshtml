@@ -1,0 +1,78 @@
+﻿@model EnglishVideo.Models.RegisterModel
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h3>Регистрация</h3>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="offset-md-3 col-md-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+    
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+    <div class="offset-md-3 col-md-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Login, htmlAttributes: new { @class = "control-label col-md-2" })
+  
+                @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
+     
+        </div>
+    </div>
+    <div class="offset-md-3 col-md-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+    <div class="offset-md-3 col-md-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Surname, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+ 
+        </div>
+    </div>
+    <div class="offset-md-3 col-md-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+    <div class="offset-md-3 col-md-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.PasswordConfirm, htmlAttributes: new { @class = "control-label col-md-2" })
+   
+                @Html.EditorFor(model => model.PasswordConfirm, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                @Html.ValidationMessageFor(model => model.PasswordConfirm, "", new { @class = "text-danger" })
+  
+        </div>
+    </div>
+    <div class="offset-md-3 col-md-6">
+        <div class="form-group">
+                <input type="submit" value="Зарегистрировать" class="btn btn-dark btn-lg btn-block" />
+        </div>
+    </div>
+ </div>
+ }
+
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

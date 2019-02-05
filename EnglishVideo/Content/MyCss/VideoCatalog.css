@@ -1,0 +1,59 @@
+﻿
+.text {
+    font-family: 'Amatic SC';
+    font-size: 35px;
+}
+
+.but{
+    margin-left:5px;
+}
+
+.col-mar{
+    margin:20px 0;
+}
+
+.poster {
+    cursor: pointer;
+    background: black;
+    overflow: hidden;
+    width: 100%;
+}
+
+    .poster img {
+        display: block;
+        width: 100%;
+        height: auto;
+        overflow: hidden;
+        will-change: transform;
+        transition: 1s;
+    }
+
+.poster-title {
+    padding: 10px;
+    background: #2f2e2e;
+    text-align: center;
+    font-family: 'Amatic SC';
+    color: white;
+    height: 50px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.poster-title span {
+    text-overflow: clip;
+}
+
+.poster img:hover {
+    opacity: .4;
+}
+
+a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+.page-nav{
+    float:right;
+    margin-bottom:10px;
+}
+

@@ -1,0 +1,61 @@
+﻿@model EnglishVideo.Models.VideoUser
+
+@{
+    ViewBag.Title = "AddVideoUser";
+}
+
+<h2>Новое видео:</h2>
+<br />
+@using (Html.BeginForm("AddVideoUser", "VideoUser", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-horizontal">
+        <div class="offset-md-3 col-md-6">
+            <label>Название видео:</label> <br />
+            <input name="nameVideo" class="form-control" value="" /> <br />
+        </div>
+        <div class="offset-md-3 col-md-6">
+            <label>Описание:</label> <br />
+            <textarea class="form-control" rows="3" name="description"></textarea> <br />
+        </div>
+        <div class="offset-md-3 col-md-6">
+            <label>Видео mkv:</label> <br />
+            <input type="file" class="form-control" name="mkvVideo" accept=".mkv,video/x-matroska" /><br>
+        </div>
+        <div class="offset-md-3 col-md-6">
+            <label>Видео mp4:</label> <br />
+            <input type="file" class="form-control" name="mp4Video" accept="video/mp4,video/x-m4v" /><br>
+        </div>
+        <div class="offset-md-3 col-md-6">
+            <label>Видео webm:</label><br />
+            <input type="file" class="form-control" name="webmVideo" accept="video/webm,video/x-m4v" /><br>
+        </div>
+        <div class="offset-md-3 col-md-6">
+            <label>Субтитры vtt:</label> <br />
+            <input type="file" class="form-control" name="subtitle" accept=".vtt" /><br>
+        </div>
+        <div class="offset-md-3 col-md-6">
+            <label>Постер:</label><br />
+            <input type="file" class="form-control" name="poster" accept="image/*" /><br>
+        </div>
+
+
+        <input name="userId" value="@ViewBag.userId" hidden />
+
+        <div class="form-group">
+            <div class="offset-md-3 col-md-6">
+                <input type="submit" value="Добавить" class="btn btn-dark btn-lg btn-block" />
+            </div>
+        </div>
+    </div>
+}
+
+<br />
+<br />
+<div>
+    @Html.ActionLink("Отмена", "Index")
+</div>
+
+<br />
+<br />
