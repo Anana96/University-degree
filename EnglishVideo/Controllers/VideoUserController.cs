@@ -38,13 +38,12 @@ namespace EnglishVideo.Controllers
 
         //добавление видео для текущего пользователя
         [HttpPost]
-        public ActionResult AddVideoUser(HttpPostedFileBase mkvVideo, HttpPostedFileBase mp4Video, HttpPostedFileBase webmVideo,
-                                         HttpPostedFileBase subtitle, HttpPostedFileBase poster,
+        public ActionResult AddVideoUser(HttpPostedFileBase mkvVideo, HttpPostedFileBase mp4Video, HttpPostedFileBase webmVideo
+                                         ,string subtitle, HttpPostedFileBase poster,
                                          int? userId, string nameVideo, string description)
         {
             if (ModelState.IsValid)
             {
-
                 if((mkvVideo!=null || mp4Video!=null || webmVideo!=null) && subtitle!=null && poster!=null && nameVideo!="" && description!="" && userId!=null)
                 {
                     string fileName;
@@ -100,9 +99,12 @@ namespace EnglishVideo.Controllers
 
                     if (subtitle != null)
                     {
-                        fileName = System.IO.Path.GetFileName(subtitle.FileName);
-                        fileName = "~/User-data/" + userId + "/" + nameVideo + "/" + fileName;
-                        subtitle.SaveAs(Server.MapPath(fileName));
+                        //fileName = System.IO.Path.GetFileName(subtitle.FileName);
+                        //fileName = "~/User-data/" + userId + "/" + nameVideo + "/" + fileName;
+                        //subtitle.SaveAs(Server.MapPath(fileName));
+                        //video.PathSubtitle = fileName;
+                        fileName = "~/User-data/" + userId + "/" + nameVideo + "/" + nameVideo + ".vtt";
+                        System.IO.File.WriteAllText(Server.MapPath(fileName), subtitle);
                         video.PathSubtitle = fileName;
                     }
 
@@ -126,7 +128,7 @@ namespace EnglishVideo.Controllers
 
                 if (subtitle == null)
                 {
-                    ModelState.AddModelError("", "Загрузите субтитры vtt");
+                    ModelState.AddModelError("", "Загрузите субтитры src");
                 }
 
                 if (poster == null)
@@ -145,7 +147,10 @@ namespace EnglishVideo.Controllers
             return View();
         }
 
+        class SubtitleFile : HttpPostedFileBase
+        {
 
+        }
 
         //страница видео, который пользователь выбрал из собственного каталога
         public ActionResult Video(int? id)

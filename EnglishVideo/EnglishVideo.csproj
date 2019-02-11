@@ -312,6 +312,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\myscripts\convertSubtitleSrcInVtt.js" />
     <Content Include="Scripts\myscripts\format-fonts-popper.js" />
     <Content Include="Scripts\myscripts\subtitle.js" />
     <Content Include="Scripts\popper-utils.js" />
@@ -356,7 +357,7 @@
     <Content Include="Views\Home\Dictionary.cshtml" />
     <Content Include="Views\Account\AboutUser.cshtml" />
     <Content Include="Views\Account\EditUser.cshtml" />
-    <Content Include="Views\VideoUser\Index.cshtml" />
+    <Content Include="Views\VideoUser\CatalogUser.cshtml" />
     <Content Include="Views\VideoUser\AddVideoUser.cshtml" />
     <Content Include="Views\VideoUser\Video.cshtml" />
   </ItemGroup>
