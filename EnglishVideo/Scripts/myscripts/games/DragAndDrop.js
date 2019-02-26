@@ -54,78 +54,41 @@ function drawRectangle(stage, word, translate) {
     let color = ['#c68724', '#4cff00', '#165ca3', '#c822bc', '#808080'];
     let valueRandomColor = Math.floor(Math.random() * color.length);
 
-    //var textOfWord = new Konva.Text({
-    //    text: word,
-    //    fontSize: 18,
-    //    fontFamily: 'Calibri',
-    //    fill: '#fff',
-    //    padding: 20,
-    //    align: 'center',
-    //});
-
-    ////определение положения фигуры
-    //let width = Math.floor(Math.random() * (stage.width() - textOfWord.getWidth()));
-    //let height = Math.floor(Math.random() * (stage.height() - textOfWord.getHeight()));
-
-    //var rect = new Konva.Rect({
-    //    stroke: '#fff',
-    //    strokeWidth: 1,
-    //    fill: color[valueRandomColor],
-    //    width: textOfWord.getWidth(),
-    //    height: textOfWord.getHeight(),
-    //    shadowColor: 'black',
-    //    shadowBlur: 10,
-    //    shadowOffset: [10, 10],
-    //    shadowOpacity: 0.1,
-    //    cornerRadius: 10,
-    //});
-
-
-
-
-
-    // simple label
-    var simpleLabel = new Konva.Label({
-        x:0,
-        y:0
+    var textOfWord = new Konva.Text({
+       text: word,
+       fontSize: 18,
+       fontFamily: 'Calibri',
+       fill: '#fff',
+       padding: 20,
+       align: 'center',
     });
 
-
-
-    simpleLabel.add(new Konva.Text({
-        text: word,
-        fontFamily: 'Calibri',
-        fontSize: 18,
-        padding: 10,
-        fill: 'black',
-        //draggable: true,
-        name: word,
-        zIndex:2
-    }));
-
-    simpleLabel.add(new Konva.Tag({
-        fill: color[valueRandomColor],
-        draggable: true
-    }));
-
-
-    let width = Math.floor(Math.random() * (stage.width() - simpleLabel.getWidth()));
-    let height = Math.floor(Math.random() * (stage.height() - simpleLabel.getHeight()));
-    simpleLabel.position({
-        x: width,
-        y: height
+    var rect = new Konva.Rect({
+       stroke: '#fff',
+       strokeWidth: 1,
+       fill: color[valueRandomColor],
+       width: textOfWord.getWidth(),
+       height: textOfWord.getHeight(),
+       shadowColor: 'black',
+       shadowBlur: 10,
+       shadowOffset: [10, 10],
+       shadowOpacity: 0.1,
+       cornerRadius: 10,
     });
 
+    //определение положения фигуры
+    let width = Math.floor(Math.random() * (stage.width() - rect.getWidth()));
+    let height = Math.floor(Math.random() * (stage.height() - rect.getHeight()));
 
-    //var group = new Konva.Group({
-    //    x: width,
-    //    y: height,
-    //    draggable: true,
-    //    name: word
-    //});
-    //group.add(textOfWord, rect);
+    var group = new Konva.Group({
+       x: width,
+       y: height,
+       draggable: true,
+       name: word
+    });
+    group.add(textOfWord, rect);
 
-    return simpleLabel;
+    return group;
 }
 
 function createKonva(dictionary) {
