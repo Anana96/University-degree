@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace EnglishVideo.Models
 {
@@ -25,7 +27,8 @@ namespace EnglishVideo.Models
         public DateTime DateRegister { get; set; }
         [Display(Name = "Аватарка")]
         public string AvatarPath { get; set; }
-
+        [JsonIgnore]
+        [IgnoreDataMember]
         public List<Word> Words { get; set; }
         public List<Comment> Comments { get; set; }
         public List<VideoUser> VideosUser { get; set; }

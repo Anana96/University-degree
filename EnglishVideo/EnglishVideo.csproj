@@ -79,6 +79,9 @@
     <Reference Include="Microsoft.Owin.Security.OAuth, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.Security.OAuth.2.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -91,6 +94,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -146,9 +150,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.ApplicationInsights">
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
@@ -176,6 +177,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\GamesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\VideoUserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -226,6 +228,7 @@
     <Content Include="Content\Main.css" />
     <Content Include="Content\MyCss\AboutUser.css" />
     <Content Include="Content\MyCss\Dictionary.css" />
+    <Content Include="Content\MyCss\Games.css" />
     <Content Include="Content\MyCss\IndexVideoUser.css" />
     <Content Include="Content\MyCss\Login.css" />
     <Content Include="Content\MyCss\Video.css" />
@@ -314,6 +317,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\myscripts\convertSubtitleSrcInVtt.js" />
     <Content Include="Scripts\myscripts\format-fonts-popper.js" />
+    <Content Include="Scripts\myscripts\games\DragAndDrop.js" />
     <Content Include="Scripts\myscripts\subtitle.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
@@ -360,6 +364,8 @@
     <Content Include="Views\VideoUser\CatalogUser.cshtml" />
     <Content Include="Views\VideoUser\AddVideoUser.cshtml" />
     <Content Include="Views\VideoUser\Video.cshtml" />
+    <Content Include="Views\Games\Index.cshtml" />
+    <Content Include="Views\Games\DragAndDrops.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Video\Lord\" />

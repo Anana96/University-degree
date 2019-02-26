@@ -1,4 +1,4 @@
-﻿"use strict"
+﻿'use strict';
 
 var video = document.getElementsByTagName("video");
 var trackCur = video[0].textTracks[0];
@@ -9,7 +9,7 @@ var yandApi = {
     api: 'https://translate.yandex.net/api/v1.5/tr.json/translate',
     format: 'GET',
     lang: 'en-ru'
-}
+};
 
 //для считывания метаданных(субтитров) и генерации собственных субтитров
 trackCur.oncuechange = () => {
@@ -18,13 +18,13 @@ trackCur.oncuechange = () => {
     let display = document.getElementById("display");
     if (cue === undefined) {
         display.style.display = "none";
-    } else {    
+    } else {
         display.style.display = "block";
         console.log(cue.text);
         cue.text = cue.text.replace(/<[^>]+>/g, '');
         dsp.innerHTML = cue.text.replace(/\b(\w+?)\b/g, '<span class="word" onclick=selectWord(this) onmouseover=hoverWord(this)>$1</span>');
     }
-}
+};
 
 //ajax запрос
 function ajax(url, method) {
@@ -39,7 +39,7 @@ function ajax(url, method) {
                     resolve(JSON.parse(req.responseText));
                 }
             }
-        }
+        };
         req.onerror = () => reject(" Ошибка запроса к серверу readyState=" + req.readyState + " status="+req.status);
         req.send(null);
     });
@@ -50,7 +50,7 @@ function userExist() {
     return new Promise((resolve, reject) => {
         let url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
         url += '/Account/CurrentUser';
-        ajax(url, 'POST').then(
+        ajax(url, 'Get').then(
              object =>{
                 console.log(object.ResponseBool);
                 resolve(object.ResponseBool);
@@ -91,7 +91,7 @@ function addTranslationToDatabase(eng, rus)
         ajax(url, 'POST').then(
              object => {
                 console.log(object);
-                 if (object.Response == 'Такой объект уже есть в базе' || object.Response == 'Ошибка, пользователь не найден') {
+                 if (object.Response === 'Такой объект уже есть в базе' || object.Response === 'Ошибка, пользователь не найден') {
                      reject(object.Response);
                 }
                 else {
@@ -143,7 +143,7 @@ function selectWord(x) {
                         },
                          error => {
                             console.error("Ошибка.Добавление неудачно." + error);
-                             if (error!="") {
+                             if (error!=="") {
                                  modalInfo(error);
                              } else {
                                 modalInfo();
@@ -192,7 +192,7 @@ function modalFunc(message, callbackCansel, callbackOk) {
 
 //вызов функций ok и cansel модального окна с переводом
 function modalEvent(action) {
-    if (action == 'yes') {
+    if (action === 'yes') {
         modalOk();
     }
     else {

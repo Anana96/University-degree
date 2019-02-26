@@ -172,13 +172,14 @@ namespace EnglishVideo.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //возвращает наличие текущего пользователя в системе на AJAX запрос
-        [HttpPost]
+        //возвращает текущего пользователя в системе на AJAX запрос
+        [HttpGet]
         public JsonResult CurrentUser()
         {
             Info message = new Info
             {
-                ResponseBool = User.Identity.IsAuthenticated
+                ResponseBool = User.Identity.IsAuthenticated,
+                UserLogin = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name).Login
             };
             return Json(message, JsonRequestBehavior.AllowGet);
         }

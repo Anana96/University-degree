@@ -9,5 +9,6 @@ namespace EnglishVideo.Models
     {
         public string Response { get; set; }
         public bool ResponseBool { get; set; }
+        public string UserLogin { get; set; }
     }
 }

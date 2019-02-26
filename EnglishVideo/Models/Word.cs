@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,6 +10,7 @@ namespace EnglishVideo.Models
 {
     public class Word
     {
+        [JsonIgnore]
         [Key]
         public int Id { get; set; }
         [Display(Name = "Слова на английском")]
