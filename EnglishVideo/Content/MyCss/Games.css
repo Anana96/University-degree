@@ -6,3 +6,44 @@
     border: 2px solid #dcdcdc;
     background: #aa6565;
 }
+
+.cont-drag{
+    display: flex;
+    justify-content:space-between;
+}
+
+.title-drag, .title-points {
+    font-family: 'Amatic SC';
+}
+
+.title-drag{
+    font-size: 40px;
+}
+
+.result-game {
+    font-size: 50px;
+    text-align: center;
+    position: relative;
+    color: #ffffff;
+    display: block;
+    padding: 20px;
+    border: 1px solid;
+    background: darkslategrey;
+}
+
+.konva-dark{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:100%;
+    height:100%;
+    background:#000000;
+    opacity:0.3;
+}
+
+.result-game-points{
+    font-size:25px;
+    position:relative;
+    top:10px;
+    color:#acc5ff;
+}

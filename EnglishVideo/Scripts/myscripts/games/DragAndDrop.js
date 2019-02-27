@@ -49,7 +49,7 @@ function startGame(words) {
 }
 
 
-function drawRectangle(stage, word, translate) {
+function drawRectangle(stage, id, word) {
 
     let color = ['#c68724', '#4cff00', '#165ca3', '#c822bc', '#808080'];
     let valueRandomColor = Math.floor(Math.random() * color.length);
@@ -60,11 +60,11 @@ function drawRectangle(stage, word, translate) {
        fontFamily: 'Calibri',
        fill: '#fff',
        padding: 20,
-       align: 'center',
+       align: 'center'
     });
 
     var rect = new Konva.Rect({
-       stroke: '#fff',
+       stroke: '#dcdcdc',
        strokeWidth: 1,
        fill: color[valueRandomColor],
        width: textOfWord.getWidth(),
@@ -73,7 +73,7 @@ function drawRectangle(stage, word, translate) {
        shadowBlur: 10,
        shadowOffset: [10, 10],
        shadowOpacity: 0.1,
-       cornerRadius: 10,
+       cornerRadius: 15
     });
 
     //определение положения фигуры
@@ -84,10 +84,9 @@ function drawRectangle(stage, word, translate) {
        x: width,
        y: height,
        draggable: true,
-       name: word
+       name: id.toString(),
     });
-    group.add(textOfWord, rect);
-
+    group.add(rect,textOfWord );
     return group;
 }
 
@@ -102,18 +101,20 @@ function createKonva(dictionary) {
     stage.add(layer);
     var tempLayer = new Konva.Layer();
     stage.add(tempLayer);
-    //текст с указанием движения
-    var text = new Konva.Text({
-        fill: 'black'
-    });
-    layer.add(text);
+
+    ////текст с указанием движения
+    //var text = new Konva.Text({
+    //    fill: 'black'
+    //});
+    //layer.add(text);
 
 
     dictionary.forEach((objectWord) => {
         let eng = objectWord.English;
         let rus = objectWord.Russia;
-        let rectangleEng = drawRectangle(stage,eng, rus);
-        let rectangleRus = drawRectangle(stage,rus, eng);
+        let id = objectWord.Id;
+        let rectangleEng = drawRectangle(stage,id,eng);
+        let rectangleRus = drawRectangle(stage,id,rus);
         layer.add(rectangleEng);
         layer.add(rectangleRus);
     });
@@ -121,111 +122,183 @@ function createKonva(dictionary) {
     layer.draw();
 
 
+    let drop = false;
 
-
-    //начало движения элемента
     stage.on("dragstart", function (e) {
         e.target.moveTo(tempLayer);
-        text.text('Moving ' + e.target.name());
-        layer.draw();
-    });
-
-    //покинутый элемент
-    var previousShape;
-
-
-    //движение
-    stage.on("dragmove", function (evt) {
-        var pos = stage.getPointerPosition();
-        var shape = layer.getIntersection(pos);
-        if (previousShape && shape) {
-            if (previousShape !== shape) {
-                // leave from old targer
-                previousShape.fire('dragleave', {
-                    type: 'dragleave',
-                    target: previousShape,
-                    evt: evt.evt
-                }, true);
-
-                // enter new targer
-                shape.fire('dragenter', {
-                    type: 'dragenter',
-                    target: shape,
-                    evt: evt.evt
-                }, true);
-                previousShape = shape;
-            } else {
-                previousShape.fire('dragover', {
-                    type: 'dragover',
-                    target: previousShape,
-                    evt: evt.evt
-                }, true);
-            }
-        } else if (!previousShape && shape) {
-            previousShape = shape;
-            shape.fire('dragenter', {
-                type: 'dragenter',
-                target: shape,
-                evt: evt.evt
+        console.log('start');
+    //    text.text('Moving ' + e.target.name());
+        if (drop && previousShape) {
+            previousShape.fire('dragleave', {
+                type: 'dragleave',
+                target: previousShape,
+                evt: e.e
             }, true);
-        } else if (previousShape && !shape) {
+            previousShape = undefined;
+        }
+        layer.draw();
+
+});
+
+
+    var previousShape;
+ 
+stage.on("dragmove", function (evt) {
+    var pos = stage.getPointerPosition();
+    var shape = layer.getIntersection(pos, 'Group');
+    if (!previousShape && !shape) return;
+    if (previousShape && shape) {
+        if (previousShape !== shape) {
+            // leave from old targer
             previousShape.fire('dragleave', {
                 type: 'dragleave',
                 target: previousShape,
                 evt: evt.evt
             }, true);
-            previousShape = undefined;
+
+            // enter new targer
+            shape.fire('dragenter', {
+                type: 'dragenter',
+                target: shape,
+                evt: evt.evt
+            }, true);
+            previousShape = shape;
+        } else {
+            previousShape.fire('dragover', {
+                type: 'dragover',
+                target: previousShape,
+                evt: evt.evt
+            }, true);
         }
+    } else if (!previousShape && shape) {
+        previousShape = shape;
+        shape.fire('dragenter', {
+            type: 'dragenter',
+            target: shape,
+            evt: evt.evt
+        }, true);
+    } else if (previousShape && !shape) {
+        previousShape.fire('dragleave', {
+            type: 'dragleave',
+            target: previousShape,
+            evt: evt.evt
+        }, true);
+         previousShape = undefined;
+    }
+    else
+        return;
     });
 
-    //конец движения
+
     stage.on("dragend", function (e) {
-        var pos = stage.getPointerPosition();
-        var shape = layer.getIntersection(pos);
-        if (shape) {
+    console.log('end');
+    if (previousShape) {
+        if (previousShape.getName() === e.target.getName()) {
+            e.target.moveTo(layer);
+            e.target.destroy();
+            previousShape.destroy();
+            upPoints();
+            layer.draw();
+            tempLayer.draw();
+            checkEnd(layer, tempLayer);
+            return;
+        } else {
+            downPoints();
             previousShape.fire('drop', {
                 type: 'drop',
                 target: previousShape,
                 evt: e.evt
             }, true);
+            drop = true;
         }
-        previousShape = undefined;
-        e.target.moveTo(layer);
-        layer.draw();
-        tempLayer.draw();
+    }
+
+
+    e.target.moveTo(layer);
+    layer.draw();
+    tempLayer.draw();
     });
 
-    //первый раз накрывает другой
-    stage.on("dragenter", function (e) {
-        e.target.fill('green');
-        text.text('dragenter ' + e.target.name());
+    stage.on("drop", function (e) {
+        console.log('drop');
+        console.log(e.target);
+        let rectLower = e.target.getChildren()[0];
+        rectLower.fill('red');
+      //  text.text('drop ' + e.target.name());
         layer.draw();
     });
+
+    
+    stage.on("dragenter", function (e) {
+    console.log('enter');
+    let rectLower = e.target.getChildren()[0];
+    colorBack = rectLower.getAttr('fill');
+    rectLower.fill('yellow');
+   // text.text('dragenter ' + e.target.name());
+    layer.draw();
+});
+
+    stage.on("dragleave", function (e) {
+    console.log('leave');
+    console.log(e.target);
+    let rectLower = e.target.getChildren()[0];
+    rectLower.fill(colorBack);
+   // text.text('dragleave ' + e.target.name());
+    layer.draw();
+});
+
 
     let colorBack;
-    //покидает другой и еще держится пользователем
-    stage.on("dragleave", function (e) {
-        e.target.fill('blue');
-        text.text('dragleave ' + e.target.name());
-        layer.draw();
-    });
 
-    //накрывает другой и еще держится пользователем
     stage.on("dragover", function (e) {
-        text.text('dragover ' + e.target.name());
-        layer.draw();
+    console.log('over');
+   // text.text('dragover ' + e.target.name());
+    layer.draw();
     });
 
-    //элемент опускается на другой и остается
-    stage.on("drop", function (e) {
-        console.log(e.target);
-        e.target.fill('red');
-        text.text('drop ' + e.target.name());
-        layer.draw();
-        });
 
+    function checkEnd(layer) {
+        console.log(layer);
+        console.log(layer.children.length);
+        if (layer.children.length === 0) {
+            console.log('Игра закончена');
+            stage.destroy();
+            endGame();
+        }
+        else
+            console.log('Продолжаем игру');
+    }
+
+    
 }
 
+function getPoints() {
+    return document.getElementById('points').innerText;
+}
+
+
+function upPoints() {
+    let points = document.getElementById('points').innerText;
+    points = ++points;
+    document.getElementById('points').innerText = points;
+}
+
+function downPoints() {
+    let points = document.getElementById('points').innerText;
+    points = --points;
+    document.getElementById('points').innerText = points;
+}
+
+function endGame() {
+    let konvaContainer = document.getElementById('container-konva');
+    var div = document.createElement('div');
+    div.className = "konva-dark";
+    var message = document.createElement('span');
+    message.className = "result-game";
+    message.innerHTML = `Вы победили. <br> <span class="result-game-points">У вас ${getPoints()} балла</span>`;
+    div.appendChild(message);
+    konvaContainer.appendChild(div);
+}
 
 //точка входа
 startGame(getWordsFromDictionary());
