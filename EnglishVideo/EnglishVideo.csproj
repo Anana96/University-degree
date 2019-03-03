@@ -318,6 +318,7 @@
     <Content Include="Scripts\myscripts\convertSubtitleSrcInVtt.js" />
     <Content Include="Scripts\myscripts\format-fonts-popper.js" />
     <Content Include="Scripts\myscripts\games\DragAndDrop.js" />
+    <Content Include="Scripts\myscripts\games\Second.js" />
     <Content Include="Scripts\myscripts\subtitle.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
@@ -366,6 +367,7 @@
     <Content Include="Views\VideoUser\Video.cshtml" />
     <Content Include="Views\Games\Index.cshtml" />
     <Content Include="Views\Games\DragAndDrops.cshtml" />
+    <Content Include="Views\Games\SecondGame.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Video\Lord\" />

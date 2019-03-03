@@ -50,6 +50,17 @@ namespace EnglishVideo.Controllers
             return Json(null, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult SecondGame()
+        {
+            User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
+            if (user != null)
+            {
+                return View();
+            }
+            return RedirectToAction("Index", "Games");
+        }
+
+
         class EnglishRussianWord
         {
             
