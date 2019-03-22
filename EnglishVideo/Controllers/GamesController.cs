@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace EnglishVideo.Controllers
 {
@@ -50,6 +52,79 @@ namespace EnglishVideo.Controllers
             return Json(null, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> OxfordApi(string word)
+        {
+            if (word.Length > 0)
+            {
+                string app_id = "df57cfab";
+                string app_key = "6901e4149ed64fce7ebcd66b50711b93";
+                string language = "en";
+                string url = $"https://od-api.oxforddictionaries.com:443/api/v1/entries/{language}/{word}/sentences";
+                //var request = new HttpRequestMessage
+                //{
+                //    RequestUri = new Uri(url),
+                //    Method = HttpMethod.Get,
+
+                //    Headers = {
+                //        { "api_id", app_id },
+                //        { "app_key", app_key},
+                //    },
+                //    Content = new StringContent(JsonConvert.SerializeObject(svm))
+                //};
+                using(var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Add("app_id", app_id);
+                    client.DefaultRequestHeaders.Add("app_key", app_key);
+                    //var response = await client.GetStringAsync(url);
+                    //response = JsonConvert.DeserializeObject<object>(response);
+                    var response = await client.GetStringAsync(url);
+                    return Json(response, JsonRequestBehavior.AllowGet);
+                }
+                
+            }
+            else
+                return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> OxfordRequest(string word)
+        {
+            if (word.Length > 0)
+            {
+                string app_id = "df57cfab";
+                string app_key = "6901e4149ed64fce7ebcd66b50711b93";
+                string language = "en";
+                string url = $"https://od-api.oxforddictionaries.com:443/api/v1/entries/{language}/{word}";
+                //var request = new HttpRequestMessage
+                //{
+                //    RequestUri = new Uri(url),
+                //    Method = HttpMethod.Get,
+
+                //    Headers = {
+                //        { "api_id", app_id },
+                //        { "app_key", app_key},
+                //    },
+                //    Content = new StringContent(JsonConvert.SerializeObject(svm))
+                //};
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Add("app_id", app_id);
+                    client.DefaultRequestHeaders.Add("app_key", app_key);
+                    //var response = await client.GetStringAsync(url);
+                    //response = JsonConvert.DeserializeObject<object>(response);
+                    var response = await client.GetStringAsync(url);
+                    return Json(response, JsonRequestBehavior.AllowGet);
+                }
+
+            }
+            else
+                return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
+
         public ActionResult SecondGame()
         {
             User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
@@ -60,12 +135,44 @@ namespace EnglishVideo.Controllers
             return RedirectToAction("Index", "Games");
         }
 
-
-        class EnglishRussianWord
+        public ActionResult ThirdGame()
         {
-            
-            public string English;
-            public string Russian;
+            User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
+            if (user != null)
+            {
+                return View();
+            }
+            return RedirectToAction("Index", "Games");
         }
+
+        public ActionResult SpeechGame()
+        {
+            User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
+            if (user != null)
+            {
+                return View();
+            }
+            return RedirectToAction("Index", "Games");
+        }
+
+        public ActionResult FiveGame()
+        {
+            User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
+            if (user != null)
+            {
+                return View();
+            }
+            return RedirectToAction("Index", "Games");
+        }
+
+
+
+
+        //class EnglishRussianWord
+        //{
+
+        //    public string English;
+        //    public string Russian;
+        //}
     }
 }

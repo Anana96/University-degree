@@ -300,6 +300,7 @@
     <Content Include="Content\Subtitles\Pirates\Pirates_3.vtt" />
     <Content Include="Content\Subtitles\Hobbit\Hobbit_3.vtt" />
     <Content Include="Content\Video\Pirates\Pirates_1.webm" />
+    <Content Include="Content\MyCss\preloader.css" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
     <Content Include="Scripts\jquery-3.0.0.js" />
     <Content Include="Scripts\jquery-3.0.0.min.js" />
@@ -315,10 +316,15 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\myscripts\games\AjaxRequest.js" />
     <Content Include="Scripts\myscripts\convertSubtitleSrcInVtt.js" />
     <Content Include="Scripts\myscripts\format-fonts-popper.js" />
     <Content Include="Scripts\myscripts\games\DragAndDrop.js" />
+    <Content Include="Scripts\myscripts\games\Five.js" />
+    <Content Include="Scripts\myscripts\games\OxfordApi.js" />
     <Content Include="Scripts\myscripts\games\Second.js" />
+    <Content Include="Scripts\myscripts\games\Speech.js" />
+    <Content Include="Scripts\myscripts\games\Third.js" />
     <Content Include="Scripts\myscripts\subtitle.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
@@ -368,6 +374,9 @@
     <Content Include="Views\Games\Index.cshtml" />
     <Content Include="Views\Games\DragAndDrops.cshtml" />
     <Content Include="Views\Games\SecondGame.cshtml" />
+    <Content Include="Views\Games\ThirdGame.cshtml" />
+    <Content Include="Views\Games\SpeechGame.cshtml" />
+    <Content Include="Views\Games\FiveGame.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Video\Lord\" />

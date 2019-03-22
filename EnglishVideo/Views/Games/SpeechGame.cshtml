@@ -1,0 +1,34 @@
+﻿
+
+<link href="~/Content/MyCss/Games.css" rel="stylesheet" />
+<link href="~/Content/MyCss/preloader.css" rel="stylesheet"/>
+
+
+
+
+<h2>Игра с распознованием речи</h2>
+<div class="cont-game third">
+    <span class="title-points">Баллы: <span id="points">0</span></span>
+</div>
+
+
+<div id="container-konva">
+    <div class="window-start-game ">
+        <button id="button-start-game">Начать игру</button>
+    </div>
+
+    <div id="body-speech-game">
+        <div class="text-speech "></div>
+        <div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        <div class="result-speech"></div>
+        <div class="button-speech-options">
+            <button>Стоп</button>
+            <button>Следующий текст</button>
+        </div>
+    </div>
+    <div id="end-game"></div>
+</div>
+
+
+<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
+<script src="~/Scripts/myscripts/games/Speech.js"></script>

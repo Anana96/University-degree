@@ -3,16 +3,30 @@
 <link href="~/Content/MyCss/Games.css" rel="stylesheet" />
 
 
-
+    
 
     <h2>Игра 2</h2>
     <div class="cont-game">
         <span class="title-points">Баллы: <span id="points">0</span></span>
-        <span class="title-time">Время: <span id="timer">10</span></span>
+        <span class="title-time">Время: <span id="timer">15</span></span>
     </div>
 
-<div id="container-konva"></div>
-<input type="text" id="user-input" />
+ 
+    <div id="container-konva">
+        <div class="window-start-game">
+            <button id="button-start-game">Начать игру</button>
+        </div>
+        <div class="body-game">
+            <div id="card-word">
+                <span id="card-eng"></span>
+            </div>
+            <input type="text" id="user-input" />
+        </div>
 
-<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
-<script src="~/Scripts/myscripts/games/Second.js"></script>
+        <div id="end-game"></div>
+    </div>
+
+        @*<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>*@
+        @*<script src="~/Scripts/myscripts/games/AjaxRequest.js"></script>
+        <script src="~/Scripts/myscripts/games/OxfordApi.js"></script>*@
+        <script src="~/Scripts/myscripts/games/Second.js"></script>
