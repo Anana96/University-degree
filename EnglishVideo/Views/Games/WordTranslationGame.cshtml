@@ -1,30 +1,32 @@
-﻿<link href="~/Content/MyCss/Games.css" rel="stylesheet" />
+﻿
 
+<link href="~/Content/MyCss/Games.css" rel="stylesheet" />
 
-<h2>Сопоставь перевод</h2>
+<h2>Игра 2</h2>
 <div class="cont-game">
     <span class="title-points">Баллы: <span id="points">0</span></span>
+    <span class="title-time">Время: <span id="timer">15</span></span>
 </div>
 
 
 <div id="container-konva">
-    <div class="window-start-game ">
+    <div class="window-start-game">
         <button id="button-start-game">Начать игру</button>
     </div>
-
     <div class="body-game">
-        <div id="game-drag-and-drop"></div>
+        <div id="card-word">
+            <span id="card-eng"></span>
+        </div>
+        <input type="text" id="user-input" />
     </div>
-    <div id="message-game"></div>
+
     <div id="end-game"></div>
 </div>
 
-
-<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
 <script src="~/Scripts/myscripts/games/AjaxRequest.js"></script>
-<script src="~/Scripts/myscripts/games/OxfordApi.js"></script>
 <script src="~/Scripts/myscripts/games/route.js"></script>
 <script src="~/Scripts/myscripts/games/Context.js"></script>
 <script src="~/Scripts/myscripts/games/Game.js"></script>
-<script src="~/Scripts/myscripts/games/gameDragAndDrop.js"></script>
+<script src="~/Scripts/myscripts/games/gameWordTranslation.js"></script>
 <script src="~/Scripts/myscripts/games/index.js"></script>
+

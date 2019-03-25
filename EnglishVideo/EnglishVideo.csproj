@@ -201,6 +201,7 @@
       <DependentUpon>VideoEnglish.mdf</DependentUpon>
     </Content>
     <Content Include="Content\AccountStyle.css" />
+    <Content Include="Content\Books\Winnie-the-Pooh.txt" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -265,6 +266,7 @@
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\build\bundle.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
@@ -301,6 +303,7 @@
     <Content Include="Content\Subtitles\Hobbit\Hobbit_3.vtt" />
     <Content Include="Content\Video\Pirates\Pirates_1.webm" />
     <Content Include="Content\MyCss\preloader.css" />
+    <Content Include="package.json" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
     <Content Include="Scripts\jquery-3.0.0.js" />
     <Content Include="Scripts\jquery-3.0.0.min.js" />
@@ -319,12 +322,18 @@
     <Content Include="Scripts\myscripts\games\AjaxRequest.js" />
     <Content Include="Scripts\myscripts\convertSubtitleSrcInVtt.js" />
     <Content Include="Scripts\myscripts\format-fonts-popper.js" />
-    <Content Include="Scripts\myscripts\games\DragAndDrop.js" />
-    <Content Include="Scripts\myscripts\games\Five.js" />
+    <Content Include="Scripts\myscripts\games\Context.js" />
+    <Content Include="Scripts\myscripts\games\gameDragAndDrop.js" />
+    <Content Include="Scripts\myscripts\games\gameAudioTranslation.js" />
+    <Content Include="Scripts\myscripts\games\index.js" />
     <Content Include="Scripts\myscripts\games\OxfordApi.js" />
-    <Content Include="Scripts\myscripts\games\Second.js" />
-    <Content Include="Scripts\myscripts\games\Speech.js" />
-    <Content Include="Scripts\myscripts\games\Third.js" />
+    <Content Include="Scripts\myscripts\games\route.js" />
+    <Content Include="Scripts\myscripts\games\gameWordTranslation.js" />
+    <Content Include="Scripts\myscripts\games\gameSpeech.js" />
+    <Content Include="Scripts\myscripts\games\Game.js" />
+    <Content Include="Scripts\myscripts\games\gameExamplesSentences.js" />
+    <Content Include="Scripts\myscripts\index.js" />
+    <Content Include="Scripts\myscripts\person.js" />
     <Content Include="Scripts\myscripts\subtitle.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
@@ -373,10 +382,12 @@
     <Content Include="Views\VideoUser\Video.cshtml" />
     <Content Include="Views\Games\Index.cshtml" />
     <Content Include="Views\Games\DragAndDrops.cshtml" />
-    <Content Include="Views\Games\SecondGame.cshtml" />
-    <Content Include="Views\Games\ThirdGame.cshtml" />
+    <Content Include="Views\Games\WordTranslationGame.cshtml" />
     <Content Include="Views\Games\SpeechGame.cshtml" />
-    <Content Include="Views\Games\FiveGame.cshtml" />
+    <Content Include="Views\Games\AudioGame.cshtml" />
+    <Content Include="Views\Games\ExampleSentencesGame.cshtml" />
+    <Content Include="Views\Games\Game.cshtml" />
+    <Content Include="Views\Games\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Video\Lord\" />
@@ -406,7 +417,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54461</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
@@ -427,6 +438,9 @@
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>npm run build --prefix $(ProjectDir)</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

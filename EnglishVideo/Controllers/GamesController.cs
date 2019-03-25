@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Newtonsoft.Json;
-using System.Net.Http;
-using Newtonsoft.Json.Linq;
 
 namespace EnglishVideo.Controllers
 {
@@ -29,7 +29,7 @@ namespace EnglishVideo.Controllers
             User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
             if (user != null)
             {
-                return View(db.Words.OrderByDescending(x => x.Id).Where(x => x.UserId == user.Id));
+                return View();
             }
             return RedirectToAction("Index", "Games");
         }
@@ -53,7 +53,7 @@ namespace EnglishVideo.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> OxfordApi(string word)
+        public async Task<JsonResult> OxfordSentense(string word)
         {
             if (word.Length > 0)
             {
@@ -79,8 +79,13 @@ namespace EnglishVideo.Controllers
                     client.DefaultRequestHeaders.Add("app_key", app_key);
                     //var response = await client.GetStringAsync(url);
                     //response = JsonConvert.DeserializeObject<object>(response);
-                    var response = await client.GetStringAsync(url);
-                    return Json(response, JsonRequestBehavior.AllowGet);
+                    var response = await client.GetAsync(url);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return Json("word not found", JsonRequestBehavior.AllowGet);
+                    }
+                    var responseText = await client.GetStringAsync(url);
+                    return Json(responseText, JsonRequestBehavior.AllowGet);
                 }
                 
             }
@@ -89,7 +94,7 @@ namespace EnglishVideo.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> OxfordRequest(string word)
+        public async Task<JsonResult> OxfordAudio(string word)
         {
             if (word.Length > 0)
             {
@@ -97,17 +102,6 @@ namespace EnglishVideo.Controllers
                 string app_key = "6901e4149ed64fce7ebcd66b50711b93";
                 string language = "en";
                 string url = $"https://od-api.oxforddictionaries.com:443/api/v1/entries/{language}/{word}";
-                //var request = new HttpRequestMessage
-                //{
-                //    RequestUri = new Uri(url),
-                //    Method = HttpMethod.Get,
-
-                //    Headers = {
-                //        { "api_id", app_id },
-                //        { "app_key", app_key},
-                //    },
-                //    Content = new StringContent(JsonConvert.SerializeObject(svm))
-                //};
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
@@ -115,8 +109,13 @@ namespace EnglishVideo.Controllers
                     client.DefaultRequestHeaders.Add("app_key", app_key);
                     //var response = await client.GetStringAsync(url);
                     //response = JsonConvert.DeserializeObject<object>(response);
-                    var response = await client.GetStringAsync(url);
-                    return Json(response, JsonRequestBehavior.AllowGet);
+                    var response = await client.GetAsync(url);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return Json("audio not found", JsonRequestBehavior.AllowGet);
+                    }
+                    var responseText = await client.GetStringAsync(url);
+                    return Json(responseText, JsonRequestBehavior.AllowGet);
                 }
 
             }
@@ -125,7 +124,7 @@ namespace EnglishVideo.Controllers
         }
 
 
-        public ActionResult SecondGame()
+        public ActionResult WordTranslationGame()
         {
             User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
             if (user != null)
@@ -135,7 +134,7 @@ namespace EnglishVideo.Controllers
             return RedirectToAction("Index", "Games");
         }
 
-        public ActionResult ThirdGame()
+        public ActionResult ExampleSentencesGame()
         {
             User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
             if (user != null)
@@ -155,7 +154,7 @@ namespace EnglishVideo.Controllers
             return RedirectToAction("Index", "Games");
         }
 
-        public ActionResult FiveGame()
+        public ActionResult AudioGame()
         {
             User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
             if (user != null)
@@ -165,7 +164,27 @@ namespace EnglishVideo.Controllers
             return RedirectToAction("Index", "Games");
         }
 
-
+        [HttpGet]
+        public async Task<JsonResult> GetBookAsync()
+        {
+            string path = "~/Content/Books/Winnie-the-Pooh.txt";
+            path = Server.MapPath(path);
+            //var str = System.IO.File.OpenRead(path);
+            //    var result = System.IO.File.OpenText(@path).ReadToEnd();
+            //    result =
+            //   string[] str = System.IO.File.OpenText(@path).ReadToEnd().Split('.', '!', '?');
+            try
+            {
+                StreamReader reader = new StreamReader(path, Encoding.GetEncoding(1251));
+                var book = await reader.ReadToEndAsync();
+              //  string[] arrayBook = book.Split('.', '!', '?');
+              
+                return Json(book, JsonRequestBehavior.AllowGet);
+            }
+            catch {
+               return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
 
 
         //class EnglishRussianWord
