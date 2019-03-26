@@ -52,6 +52,35 @@ namespace EnglishVideo.Controllers
 
             return View(model);
         }
+        
+        [HttpGet]
+        public JsonResult ChangeRaiting(int raiting)
+        {
+            User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
+            try
+            {
+                user.Rating = raiting;
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult GetRaiting()
+        {
+            User user = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name);
+            if(user != null)
+            {
+                return Json(user.Rating, JsonRequestBehavior.AllowGet);
+            }
+            return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+
 
         //добавление в базу данных пользователя и вход в систему
         [HttpPost]

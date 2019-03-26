@@ -186,6 +186,22 @@ namespace EnglishVideo.Controllers
             }
         }
 
+        public ViewResult GetAllRaiting()
+        {
+            //var sortedUsers = from u in db.Users
+            //                  orderby u.Rating descending
+            //                  select u;
+            var sortedUsers = db.Users.OrderByDescending(u => u.Rating);
+            List<Raitings> usersRaitings = new List<Raitings>();
+            foreach(var user in sortedUsers)
+            {
+                Raitings userRaiting = new Raitings(user.Login, user.Rating);
+                usersRaitings.Add(userRaiting);
+            }
+            return View(usersRaitings);
+        }
+
+
 
         //class EnglishRussianWord
         //{

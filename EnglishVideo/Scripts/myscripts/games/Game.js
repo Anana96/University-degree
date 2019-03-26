@@ -8,13 +8,14 @@
         this.time = 15;
         this.dictionary = null;
         this.lenghtDictionary = 0;
+        this.getRaiting();
     }
 
     start() {
         console.log('Начало игры(родительский класс)');
+        
     }
 
-    
     setDictionary(dictionary) {
         this.dictionary = dictionary;
         this.lenghtDictionary = dictionary.length;
@@ -69,6 +70,19 @@
     }
     //-----Конец игры-------
     endGame() {
+        let url = `${document.location.origin}/Account/ChangeRaiting?raiting=${this.points}`;
+        let conn = new AjaxRequest(url);
+        conn.getJson().then((raiting) => {
+            console.log(`изменение рейтинга: ${raiting}`);
+        })
+            .catch((err) => {
+                this.message('Рейтинг не изменен');
+                console.log(`Рейтинг не изменен ${err}`);
+            });
+        this.endGameDOM();
+    }
+
+    endGameDOM() {
         document.getElementsByClassName('body-game')[0].style.display = 'none';
         let endDOM = document.getElementById('end-game');
         endDOM.style.display = 'flex';
@@ -98,7 +112,6 @@
         document.getElementsByClassName('end-game-content')[0].appendChild(buttons);
     }
 
-
     message(text) {
         document.getElementsByClassName('body-game')[0].style.display = 'none';
         let endDOM = document.getElementById('message-game');
@@ -108,7 +121,22 @@
 
     shakeDictionary() {
         this.dictionary.sort(() => { return Math.random() - 0.5; });
+        }
+
+    getRaiting() {
+        let url = `${document.location.origin}/Account/GetRaiting`;
+        let conn = new AjaxRequest(url);
+        conn.getJson().then((raiting) => {
+            console.log(`рейтинг ${raiting}`);
+            this.points = raiting;
+            document.getElementById('points').innerText = raiting;
+        })
+            .catch((err) => {
+                this.message('Рейтинг не получен');
+                console.log('Рейтинг не получен');
+            });
     }
+    
 }
 
 //export default Game;

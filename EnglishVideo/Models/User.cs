@@ -27,6 +27,9 @@ namespace EnglishVideo.Models
         public DateTime DateRegister { get; set; }
         [Display(Name = "Аватарка")]
         public string AvatarPath { get; set; }
+        [Display(Name = "Рейтинг:")]
+        public int Rating { get; set; }
+
         [JsonIgnore]
         [IgnoreDataMember]
         public List<Word> Words { get; set; }

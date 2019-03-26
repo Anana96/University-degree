@@ -16,7 +16,7 @@
         let urlServer = `${this.urlSeverSentense}?word=${word.toLowerCase()}`;
         let conn = new AjaxRequest(urlServer, this.method);
          return conn.getJson().then(response => {
-            if (response == "word not found")
+            if (response === "word not found")
                  return null;
             let responseJson = JSON.parse(response);
             responseJson = responseJson.results[0].lexicalEntries[0].sentences;
@@ -32,7 +32,7 @@
         let urlServer = this.urlServerAudio + '?word=' + word;
         let conn = new AjaxRequest(urlServer, this.method);
         return conn.getJson().then(response => {
-            if (response == "audio not found")
+            if (response === "audio not found")
                 return null;
             let responseJson = JSON.parse(response);
             urlAudio = responseJson.results[0].lexicalEntries[0].pronunciations[0].audioFile;

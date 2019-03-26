@@ -189,6 +189,7 @@
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Info.cs" />
     <Compile Include="Models\LogIn.cs" />
+    <Compile Include="Models\Raitings.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Video.cs" />
     <Compile Include="Models\VideoUser.cs" />
@@ -386,6 +387,7 @@
     <Content Include="Views\Games\SpeechGame.cshtml" />
     <Content Include="Views\Games\AudioGame.cshtml" />
     <Content Include="Views\Games\ExampleSentencesGame.cshtml" />
+    <Content Include="Views\Games\GetAllRaiting.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Video\Lord\" />
