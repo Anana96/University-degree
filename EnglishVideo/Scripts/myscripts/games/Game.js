@@ -1,6 +1,6 @@
-﻿
+﻿import AjaxRequest from './AjaxRequest'
 
-class Game {
+export default class Game {
 
     constructor() {
         this.points = 0;
@@ -72,7 +72,31 @@ class Game {
         let endDOM = document.getElementById('end-game');
         endDOM.style.display = 'flex';
         endDOM.innerHTML = `<div class='end-game-content'>Игра окончена. <br> <span class="result-game-points">У вас ${this.getPoints()} балла</span><div>`;
+        let buttons = document.createElement('div');
+        buttons.className = 'button-end-options';
+
+        let reset = document.createElement('button');
+        reset.className = 'button-end';
+        reset.appendChild(document.createTextNode('Старт'));
+        reset.onclick = () => {
+            document.getElementById('button-start-game').click();
+            document.getElementsByClassName('body-game')[0].style.display = 'flex';
+            endDOM.style.display = 'none';
+        }
+
+        let redirect = document.createElement('button');
+        redirect.className = 'button-end';
+        redirect.appendChild(document.createTextNode('Выход'));
+        redirect.onclick = () => {
+            document.location = document.location.origin + '/Games';
+        }
+
+        buttons.appendChild(reset);
+        buttons.appendChild(redirect);
+
+        document.getElementsByClassName('end-game-content')[0].appendChild(buttons);
     }
+
 
     message(text) {
         document.getElementsByClassName('body-game')[0].style.display = 'none';

@@ -1,6 +1,6 @@
-﻿
+﻿import Game from './Game';
 
-class DragAndDropGame extends Game {
+export default class DragAndDropGame extends Game {
 
     constructor() {
         super();

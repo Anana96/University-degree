@@ -7,5 +7,5 @@ const routes = {
     "/Games/AudioGame": "audioTranslation"
 };
 
-//export default routes;
+export default routes;
 

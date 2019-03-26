@@ -323,15 +323,15 @@
     <Content Include="Scripts\myscripts\convertSubtitleSrcInVtt.js" />
     <Content Include="Scripts\myscripts\format-fonts-popper.js" />
     <Content Include="Scripts\myscripts\games\Context.js" />
-    <Content Include="Scripts\myscripts\games\gameDragAndDrop.js" />
-    <Content Include="Scripts\myscripts\games\gameAudioTranslation.js" />
+    <Content Include="Scripts\myscripts\games\GameDragAndDrop.js" />
+    <Content Include="Scripts\myscripts\games\GameAudioTranslation.js" />
     <Content Include="Scripts\myscripts\games\index.js" />
     <Content Include="Scripts\myscripts\games\OxfordApi.js" />
     <Content Include="Scripts\myscripts\games\route.js" />
-    <Content Include="Scripts\myscripts\games\gameWordTranslation.js" />
-    <Content Include="Scripts\myscripts\games\gameSpeech.js" />
+    <Content Include="Scripts\myscripts\games\GameWordTranslation.js" />
+    <Content Include="Scripts\myscripts\games\GameSpeech.js" />
     <Content Include="Scripts\myscripts\games\Game.js" />
-    <Content Include="Scripts\myscripts\games\gameExamplesSentences.js" />
+    <Content Include="Scripts\myscripts\games\GameExamplesSentences.js" />
     <Content Include="Scripts\myscripts\index.js" />
     <Content Include="Scripts\myscripts\person.js" />
     <Content Include="Scripts\myscripts\subtitle.js" />
@@ -386,8 +386,6 @@
     <Content Include="Views\Games\SpeechGame.cshtml" />
     <Content Include="Views\Games\AudioGame.cshtml" />
     <Content Include="Views\Games\ExampleSentencesGame.cshtml" />
-    <Content Include="Views\Games\Game.cshtml" />
-    <Content Include="Views\Games\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Video\Lord\" />

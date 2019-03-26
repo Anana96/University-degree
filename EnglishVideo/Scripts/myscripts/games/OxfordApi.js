@@ -1,8 +1,8 @@
 ﻿//получение текста из запроса к оксфордскому словарю
-//import AjaxRequest from './AjaxRequest'
+import AjaxRequest from './AjaxRequest'
 
 
-class OxfordApi {
+export default class OxfordApi {
     constructor() {
         this.urlServerAudio = `${document.location.origin}/Games/OxfordAudio`;
         this.urlSeverSentense = `${document.location.origin}/Games/OxfordSentense`;
@@ -10,7 +10,7 @@ class OxfordApi {
 
 
     //получение примеров предложений
-     getSentenseExemple = (word) => {
+     getSentenseExemple(word){
         let sentense = [];
         let urlServer = `${this.urlSeverSentense}?word=${word.toLowerCase()}`;
         let conn = new AjaxRequest(urlServer, this.method);
@@ -26,7 +26,7 @@ class OxfordApi {
         });
     }
 
-    getAudioExemple = (word) => {
+    getAudioExemple (word) {
         let urlAudio = '';
         let urlServer = this.urlServerAudio + '?word=' + word;
         let conn = new AjaxRequest(urlServer, this.method);

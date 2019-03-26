@@ -1,4 +1,4 @@
-﻿class AjaxRequest {
+﻿export default class AjaxRequest {
     constructor(url, method) {
         this.url = url;
         this.method = method;

@@ -1,6 +1,6 @@
-﻿
+﻿import Game from './Game';
 
-class WordTranslationGame extends Game {
+export default class WordTranslationGame extends Game {
     constructor() {
         super();
     }
@@ -70,7 +70,7 @@ class WordTranslationGame extends Game {
     }
 
     //----------Шаг игры--------
-    stepWithInterval = (i) => {
+    stepWithInterval (i) {
         document.getElementById('user-input').value = '';
         if (i >= 0) {
             this.setEnglishTextDOM(this.dictionary[i].English);

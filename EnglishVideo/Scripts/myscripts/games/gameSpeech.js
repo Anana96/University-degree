@@ -1,8 +1,7 @@
-﻿'use strict';
-//import Game from './Game'
-//import AjaxRequest from './AjaxRequest'
+﻿import AjaxRequest from './AjaxRequest'
+import Game from './Game';
 
-class SpeechGame extends Game{
+export default class SpeechGame extends Game{
     constructor() {
         super();
         this.currentText = '';
@@ -29,8 +28,8 @@ class SpeechGame extends Game{
     }
 
     start () {
-
         super.start();
+        this.init();
         console.log("Начало игры speech");
    
         let initialText = this.currentText;

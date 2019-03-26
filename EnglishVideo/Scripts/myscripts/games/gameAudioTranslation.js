@@ -1,6 +1,7 @@
-﻿
+﻿import OxfordApi from './OxfordApi'
+import Game from './Game';
 
-class AudioTranslationGame extends Game {
+export default class AudioTranslationGame extends Game {
     constructor() {
         super();
         this.currentInterval = null;
@@ -69,7 +70,7 @@ class AudioTranslationGame extends Game {
     }
 
     //----------Шаг игры--------
-    stepWithInterval = (i) => {
+    stepWithInterval(i) {
         document.getElementById('user-input').value = '';
         if (i >= 0) {
             let word = this.dictionary[i].English;

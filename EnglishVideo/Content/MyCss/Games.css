@@ -206,6 +206,25 @@
     height: 40px;
 }
 
+.button-end-options button {
+    font-family: 'Amatic SC';
+    width: 200px;
+    border: none;
+    cursor: pointer;
+    border-top: 1px solid gray;
+    outline: none;
+    background: #e6deca;
+    color: #956969;
+    border-radius: 20px;
+    height: 40px;
+    font-size: 25px;
+    margin-top: 20px;
+}
+
+.button-end{
+    margin:5px;
+}
+
 .button-with-options button {
     font-family: 'Amatic SC';
     width: 100%;

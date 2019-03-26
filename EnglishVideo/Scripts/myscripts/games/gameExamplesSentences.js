@@ -1,6 +1,7 @@
-﻿'use strict';
+﻿import OxfordApi from './OxfordApi'
+import Game from './Game';
 
-class ExampleSentencesGame extends Game {
+export default class ExampleSentencesGame extends Game {
 
     constructor() {
         super();

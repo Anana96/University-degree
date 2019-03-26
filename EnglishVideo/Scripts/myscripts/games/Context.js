@@ -1,4 +1,5 @@
-﻿class Context {
+﻿
+export default class Context {
 
     constructor() {
      this.game = null;
