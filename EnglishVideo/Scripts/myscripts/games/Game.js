@@ -1,6 +1,7 @@
-﻿import AjaxRequest from './AjaxRequest'
+﻿//import AjaxRequest from './AjaxRequest'
 
-export default class Game {
+//export default
+    class Game {
 
     constructor() {
         this.points = 0;
@@ -105,7 +106,9 @@ export default class Game {
         endDOM.innerHTML = `<div class='end-game-content'><span class="result-game-points"> ${text}</span><div>`;
     }
 
-
+    shakeDictionary() {
+        this.dictionary.sort(() => { return Math.random() - 0.5; });
+    }
 }
 
 //export default Game;

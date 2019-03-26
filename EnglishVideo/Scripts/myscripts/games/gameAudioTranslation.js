@@ -1,15 +1,32 @@
-﻿import OxfordApi from './OxfordApi'
-import Game from './Game';
+﻿//import OxfordApi from './OxfordApi'
+//import Game from './Game';
 
-export default class AudioTranslationGame extends Game {
+//export default
+    class AudioTranslationGame extends Game {
     constructor() {
         super();
-        this.currentInterval = null;
+    }
+
+
+    init() {
+        this.currentStep = 0;
+        clearInterval(this.currentTimer);
+        this.currentTimer = null;
+        document.getElementsByClassName('button-next')[0].addEventListener('click', () => {
+            clearInterval(this.currentTimer);
+            this.stepWithInterval(this.currentStep + 1);
+        })
     }
 
     start() {
         super.start();
         console.log("Начало игры");
+        this.init();
+        if (this.dictionary) {
+            this.shakeDictionary();
+            this.stepWithInterval(0);
+            return;
+        }
         let connDictionary = this.getWordsFromDictionary();
         connDictionary.then((dictionary) => {
             if (dictionary)
@@ -19,7 +36,7 @@ export default class AudioTranslationGame extends Game {
             this.setDictionary(dictionary);
             if (!this.validation())
                 return;
-            this.stepWithInterval(this.lenghtDictionary - 1);
+            this.stepWithInterval(0);
         })
             .catch((error) => console.log(` Ошибка при отрисовки игры ${error}`));
     }
@@ -39,50 +56,51 @@ export default class AudioTranslationGame extends Game {
     }
 
     //-------Работа таймера и проверка ответа(замыкание)-------
-    timer(i) {
-        let word = this.dictionary[i].English;
+    timer() {
+        let word = this.dictionary[this.currentStep].English;
         let time = this.time;
         let timerInDOM = document.getElementById('timer');
         let inputDOM = document.getElementById('user-input');
         this.setTimerDOM();
         var currentInterval = setInterval(() => {
-            time--;
+            --time;
             timerInDOM.innerText = time;
             if (time == 3) {
                 timerInDOM.className = 'red-text';
             }
             if (time <= 0) {
                 this.downPoints();
-                clearInterval(currentInterval);
-                this.stepWithInterval(i - 1);
+                clearInterval(this.currentTimer);
+                this.stepWithInterval(this.currentStep + 1);
                 return;
             }
             inputDOM.addEventListener('keyup', () => {
                 if (word.toLowerCase() == inputDOM.value.toLowerCase()) {
                     this.upPoints();
-                    clearInterval(currentInterval);
-                    this.stepWithInterval(i - 1);
+                    clearInterval(this.currentTimer);
+                    this.stepWithInterval(this.currentStep + 1);
                     return;
                 }
             });
         }, 1000);
-
+        this.currentTimer = currentInterval;
     }
 
     //----------Шаг игры--------
     stepWithInterval(i) {
+        this.currentStep = i;
         document.getElementById('user-input').value = '';
-        if (i >= 0) {
+        if (i < this.lenghtDictionary) {
             let word = this.dictionary[i].English;
             let connOxford = new OxfordApi();
             connOxford.getAudioExemple(word).then((audio) => {
                 if (!audio) {
                     console.log('аудио пропущено');
-                    this.stepWithInterval(i - 1);
+                    this.stepWithInterval(i + 1);
                     return;
                 }
                 this.setAudioDOM(audio);
-                this.timer(i,word);
+                this.timer();
             });
             
         }

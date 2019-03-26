@@ -1,13 +1,16 @@
-﻿import AjaxRequest from './AjaxRequest'
-import Game from './Game';
+﻿//import AjaxRequest from './AjaxRequest'
+//import Game from './Game';
 
-export default class SpeechGame extends Game{
+//export default
+    class SpeechGame extends Game{
     constructor() {
         super();
         this.currentText = '';
         this.currentRecognition = null;
         this.init();
         this.limitSentense = 6;
+        this.step = 1;
+        this.limitStep = 5;
     }
 
     //-------Сеттер текущего текста на экране---------
@@ -21,7 +24,17 @@ export default class SpeechGame extends Game{
 
     init() {
         this.updateText();
-        document.getElementById("next-text-speech").onclick = () => { this.updateText(); this.start(); };
+        this.step = 1;
+        document.getElementById("next-text-speech").onclick = () => {
+            this.step = this.step + 1;
+            if (this.step <= this.limitStep) {
+                this.updateText();
+                this.start();
+            }
+            else {
+                this.endGame();
+            }
+        };
         document.getElementById('stop-speech').onclick = () => {
             this.currentRecognition.stop();
         };

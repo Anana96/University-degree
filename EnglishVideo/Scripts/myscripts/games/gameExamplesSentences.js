@@ -1,7 +1,8 @@
-﻿import OxfordApi from './OxfordApi'
-import Game from './Game';
+﻿//import OxfordApi from './OxfordApi'
+//import Game from './Game';
 
-export default class ExampleSentencesGame extends Game {
+//export default
+    class ExampleSentencesGame extends Game {
 
     constructor() {
         super();
@@ -14,15 +15,14 @@ export default class ExampleSentencesGame extends Game {
         super.start();
         console.log("Начало игры");
         this.initStep();
+        if (this.dictionary) {
+            this.shakeDictionary();
+            this.step(0);
+            return;
+        }
         let connDictionary = this.getWordsFromDictionary();
         connDictionary.then((dictionary) => {
-            console.log(dictionary);
-            dictionary.sort(() => {
-                return Math.random() - 0.5;
-            });
-            console.log(dictionary);
-            this.dictionary = dictionary;
-            this.lenghtDictionary = Object.keys(this.dictionary).length; 
+            this.setDictionary(dictionary);
             if (!this.validation()) {
                 return;
             }

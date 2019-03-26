@@ -1,10 +1,11 @@
-﻿import Context from './Context';
+﻿/* import Context from './Context';
 import DragAndDropGame from './GameDragAndDrop';
 import WordTranslationGame from './GameWordTranslation';
 import ExampleSentencesGame from './GameExamplesSentences';
 import SpeechGame from './GameSpeech';
 import AudioTranslationGame from './GameAudioTranslation';
 import routes from './route';
+*/
 
 class Main {
 

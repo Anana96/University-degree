@@ -1,8 +1,9 @@
 ﻿//получение текста из запроса к оксфордскому словарю
-import AjaxRequest from './AjaxRequest'
+//import AjaxRequest from './AjaxRequest'
 
 
-export default class OxfordApi {
+//export default
+    class OxfordApi {
     constructor() {
         this.urlServerAudio = `${document.location.origin}/Games/OxfordAudio`;
         this.urlSeverSentense = `${document.location.origin}/Games/OxfordSentense`;

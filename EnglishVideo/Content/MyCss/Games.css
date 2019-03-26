@@ -84,8 +84,7 @@
 }
 
 #user-input {
-    margin-top: 10px;
-    display: block;
+    display: inline-block;
     background: #f1f3f4;
     text-align:center;
 }
@@ -126,7 +125,7 @@
     display: block;
     /*width: 200px;
     height: 200px;*/
-    font-size: 50px;
+    font-size: 60px;
     text-align: center;
     font-family: 'Amatic SC';
     justify-content: center;
@@ -272,4 +271,23 @@
 
 .body-speech-game {
     justify-content: space-around;
+}
+
+.button-next {
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+    /*padding: 5px;*/
+    /* border: none; */
+    color: white;
+    background: #8d737363;
+    cursor: pointer;
+    font-size: 30px;
+    font-family: 'Amatic SC';
+    outline: none;
+}
+
+#user-write-block {
+    margin-top: 10px;
+    font-family: 'Amatic SC';
+    font-size: 40px;
 }
