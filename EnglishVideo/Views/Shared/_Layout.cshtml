@@ -92,10 +92,11 @@
                         <li class="col  @Html.IsSelected(action: "Index", controller: "VideoUser")">
                             @Html.ActionLink("Мои видео", "CatalogUser", "VideoUser")
                         </li>
+
+                        <li class="col @Html.IsSelected(action: "Games", controller: "Home") ">
+                            @Html.ActionLink("Игры", "Index", "Games")
+                        </li>
                     }
-                    <li class="col @Html.IsSelected(action: "Games", controller: "Home") ">
-                        @Html.ActionLink("Игры", "Index", "Games")
-                    </li>
 
 
 

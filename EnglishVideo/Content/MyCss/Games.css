@@ -6,6 +6,9 @@
     border: 2px solid #dcdcdc;
     background: #aa6565;
 }
+button{
+    outline:none;
+}
 
 .cont-game{
     margin-top:20px;
@@ -173,17 +176,23 @@
 #block-examples-texts {
     display: block;
     text-align: center;
-    font-size: 25px;
+    font-size: 28px;
     width: 100%;
     position: absolute;
-    top: 10%;
+    top: 15%;
+    
+}
+
+.find-word {
+    color: #c7aa84;
 }
 
 .button-with-options {
-    display:block;
-    position:absolute;
-    bottom:0;
-    width:100%;
+    display: block;
+    position: absolute;
+    bottom: 20;
+    width: 100%;
+    text-align: center;
 }
 
 
@@ -224,24 +233,33 @@
     margin:5px;
 }
 
-.button-with-options button {
+.button-options {
     font-family: 'Amatic SC';
-    width: 100%;
+    width: 80%;
     height: 40px;
     border: none;
     cursor: pointer;
     border-top: 1px solid gray;
-    outline: none;
-    background: #e6deca;
+    background: bisque;
     color: #956969;
-    border-radius: 20px;
+    border-radius: 10px;
+    margin-top: 5px;
+    outline: none;
+}
+
+.button-options:focus {
+    outline: 0;
+}
+
+.button-options:hover{
+    background:#fff;
 }
 
 #body-third-game {
     position: relative;
     display: none;
     width: 100%;
-    min-height:100%;
+    min-height: 100%;
 }
 
 
@@ -253,7 +271,7 @@
     font-size: 35px;
 }
 
-.body-game {
+.body-game, .body-audio-game, .body-word-translation-game {
     display: none;
     width: 100%;
     min-height: 100%;
@@ -274,6 +292,7 @@
 }
 
 .button-next {
+    outline: none;
     border: 1px solid #b9b9b9;
     border-radius: 5px;
     /*padding: 5px;*/
@@ -286,8 +305,21 @@
     outline: none;
 }
 
+.button-next:focus {
+    outline: 0;
+}
+
 #user-write-block {
     margin-top: 10px;
     font-family: 'Amatic SC';
     font-size: 40px;
 }
+
+.wrong-button {
+    background: #554141;
+    color: #937f65;
+}
+
+    .wrong-button:hover {
+        background: #554141;
+    }

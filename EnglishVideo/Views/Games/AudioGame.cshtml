@@ -1,5 +1,5 @@
 ﻿<link href="~/Content/MyCss/Games.css" rel="stylesheet" />
-
+<link href="~/Content/MyCss/preloader.css" rel="stylesheet" />
 
 
 
@@ -14,18 +14,21 @@
     <div class="window-start-game ">
         <button id="button-start-game">Начать игру</button>
     </div>
-
     <div class="body-game">
-        <div id="card-word">
-            <h3>Аудио:</h3>
-            <audio src="" id="audio-eng" controls></audio>
-        </div>
-        <div id="user-write-block">
-            <span>Произнесено:</span>
-            <input type="text" id="user-input" />
-            <button class="button-next">&#8594;</button>
+        <div class="lds-default up"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        <div class="body-audio-game">
+            <div id="card-word">
+                <h3>Аудио:</h3>
+                <audio src="" id="audio-eng" controls></audio>
+            </div>
+            <div id="user-write-block">
+                <span>Произнесено:</span>
+                <input type="text" id="user-input" />
+                <button class="button-next">&#8594;</button>
+            </div>
         </div>
     </div>
+    <div id="message-game"></div>
     <div id="end-game"></div>
 </div>
 
@@ -36,7 +39,8 @@
 <script src="~/Scripts/myscripts/games/route.js"></script>
 <script src="~/Scripts/myscripts/games/Context.js"></script>
 <script src="~/Scripts/myscripts/games/Game.js"></script>
-<script src="~/Scripts/myscripts/games/GameAudioTranslation.js"></script>
+@*<script src="~/Scripts/myscripts/games/GameAudioTranslation.js"></script>*@
+<script src="~/Scripts/myscripts/games/Audio.js"></script>
 <script src="~/Scripts/myscripts/games/index.js"></script>
 
 @*<script src="~/Scripts/build/bundle.js"></script>*@

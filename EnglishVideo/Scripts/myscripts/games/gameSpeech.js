@@ -8,14 +8,14 @@
         this.currentText = '';
         this.currentRecognition = null;
         this.init();
-        this.limitSentense = 6;
-        this.step = 1;
+        this.limitSentense = 3;
+        this.currentStep = 0;
         this.limitStep = 5;
     }
 
     //-------Сеттер текущего текста на экране---------
     setCurrentText(text) {
-        this.currentText = text;
+    this.currentText = text;
     }
     //-------Сеттер текущего распознователя---------
     setCurrentRecognition(recognition) {
@@ -23,12 +23,8 @@
     }
 
     init() {
-        this.updateText();
-        this.step = 1;
-        document.getElementById("next-text-speech").onclick = () => {
-            this.step = this.step + 1;
-            if (this.step <= this.limitStep) {
-                this.updateText();
+        document.getElementById("next-text-speech").onclick = ()=> {
+            if (this.currentStep <= this.limitStep) {
                 this.start();
             }
             else {
@@ -40,27 +36,42 @@
         };
     }
 
+    clear() {
+        document.getElementsByClassName('result-speech')[0].innerText = '';
+        document.getElementsByClassName('text-speech')[0].innerText = '';
+        let preloaderDOM = document.getElementsByClassName('lds-default')[0];
+        preloaderDOM.style.display = 'block';
+    }
+
     start () {
         super.start();
-        this.init();
-        console.log("Начало игры speech");
-   
-        let initialText = this.currentText;
-        if (!this.currentText)
-            return;
-      
-        this.recognizer().then((textRecord) => {
-            console.log(`полученный текст: ${textRecord}`);
-            let interest = document.getElementsByClassName('result-speech')[0]; //процент
-            if (interest >= 50) {
-                this.upPoints();
-            }
-            else {
-                this.downPoints();
-            }
-            interest.innerText = 'Вы угадали на:' + this.findCoincidences(initialText, textRecord)+'%';
-        })
-            .catch((error) => console.log(`ошибка при распозновании голоса: ${error}`));
+        ++this.currentStep;
+        this.clear();
+        this.getText().then((text) => {
+            let initialText = this.currentText = text;
+            console.log("Начало игры speech");
+            this.updateTextDOM();
+            let preloaderDOM = document.getElementsByClassName('lds-default')[0];
+            preloaderDOM.style.display = 'none';
+
+            if (!this.currentText)
+                return;
+
+            this.recognizer().then((textRecord) => {
+                console.log(`полученный текст: ${textRecord}`);
+                let result = this.findCoincidences(initialText, textRecord);
+                let interest = document.getElementsByClassName('result-speech')[0]; //процент
+                if (result >= 50) {
+                    this.upPoints();
+                }
+                else {
+                    this.downPoints();
+                }
+                interest.innerText = 'Вы угадали на:' + result + '%';
+            })
+                .catch((error) => console.log(`ошибка при распозновании голоса: ${error}`));
+        }).catch(error => this.message(error));
+       
 
     }
 
@@ -167,19 +178,19 @@
     }
 
     //--------Следующий текст---\--------
-    updateText() {
-        let text = '';
-       
-        this.getBook().then((book) => {
-            text = this.bookProcessing(book);
-            this.setCurrentText(text);
-            this.updateTextDOM();
-        })
-            .catch((error) => {
-                console.log(`Ошибка при нахождении текста ${error}`);
-                this.message(`Извините, текст не может быть загружен`);
-                return;
-            });
+        getText() {
+            return new Promise((resolve, reject) => {
+                let text = '';
+                this.getBook().then((book) => {
+                    text = this.bookProcessing(book);
+                    resolve(text);
+                    
+                })
+                    .catch((error) => {
+                        console.log(`Ошибка при нахождении текста ${error}`);
+                        reject(`Извините, текст не может быть загружен`);
+                    });
+            })    
     }
 
 
@@ -207,7 +218,5 @@
         return interest;
     }
 
-    //-----Окрашивание текста--------- 
-    colorText() {}
 
 }

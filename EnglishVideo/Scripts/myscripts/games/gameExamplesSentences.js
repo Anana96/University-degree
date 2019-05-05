@@ -2,24 +2,42 @@
 //import Game from './Game';
 
 //export default
-    class ExampleSentencesGame extends Game {
+class ExampleSentencesGame extends Game {
 
     constructor() {
         super();
         this.sentences = null;
-        this.limitSentences = 6;
+        this.limitSentences = 3;
+        this.limitWords = 5;
         this.answerButton = 0;
+        this.currentWord = '';
+        this.currentStep = 0;
     }
 
+    //---------Инициализация шага игры---------
+    initStep() {
+        this.sentences = null;
+        document.getElementById("body-third-game").style.display = 'none';
+        document.getElementsByClassName('lds-default')[0].style.display = 'block';
+        let buttons = document.getElementsByClassName('button-options');
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].classList.remove('wrong-button','success-button');
+       
+        }
+    }
+
+    //---------Старт игры-------------
     start() {
         super.start();
-        console.log("Начало игры");
         this.initStep();
+        console.log("Начало игры");
+        //если словарь уже получен
         if (this.dictionary) {
-            this.shakeDictionary();
+            this.shakeArray(this.dictionary);
             this.step(0);
             return;
         }
+        //получение словаря
         let connDictionary = this.getWordsFromDictionary();
         connDictionary.then((dictionary) => {
             this.setDictionary(dictionary);
@@ -31,149 +49,127 @@
             .catch((error) => console.log(` Ошибка при отрисовки игры ${error}`));
     }
 
+    //----------Шаг игры--------
+    step(i) {
+        if (i >= this.lenghtDictionary && i >= this.limitWords) {
+            this.endGame();
+            return;
+        }
+        this.currentStep = i;
+        let eng = this.currentWord = this.dictionary[i].English;
+        console.log(eng);
+        this.getSentense(eng).then((sentense) => {
+            if (!sentense) {   
+                this.initStep();
+                this.step(this.currentStep + 1);
+                return;
+            }
+            //отрисовка текста
+            this.sentences = sentense;
+            this.drawStep();
+
+            //асинхронный запрос(ожидание,когда пользователь даст правильный ответ)
+            this.getAnswer().then(() => { this.initStep();this.step(this.currentStep + 1); })
+        }).catch(err => { console.log(err) });
+    }
+
     //--------Получение предложений из Оксфордского словаря--------
     getSentense(word) {
         let connOxford = new OxfordApi();
         return connOxford.getSentenseExemple(word).then((sentenses) => {
-             if (!sentenses)
-                 return null
-             sentenses = sentenses.filter((item, index) => { return index < this.limitSentences });
-             sentenses = sentenses.map((item) => { return item.replace(new RegExp(word.toLowerCase(), 'gi'), '_'.repeat(word.length)) });
-             return sentenses;
-         });
+            if (!sentenses)
+                return null
+            return sentenses;
+        });
+    }
+
+    //--------Асинхронная функция отслеживающая выбор правильного ответа----------
+    getAnswer() {
+        return new Promise((resolve) => {
+            document.getElementsByClassName('button-options')[this.answerButton].onclick = () => {
+                this.upPoints();
+                resolve()
+            }
+        });
     }
 
     //--------Cлучайное значение в массиве--------
     getRandomValueArray(arr) {
-    let index = Math.floor(Math.random() * arr.length);
-    return arr[index];
-    }
-
-    //-----------Отрисовка текста на поле---------------
-    drawTextInDOM() {
-        let textDOM = document.getElementById('block-examples-texts');
-        let sentences = this.sentences;
-        let list = '';
-        for (let i = 0; i < sentences.length; i++) {
-            list += `<li>${sentences[i]}</li>`;
-        }
-        textDOM.innerHTML = `<ul> ${list} </ul>`;
+        let index = Math.floor(Math.random() * arr.length);
+        return arr[index];
     }
 
     //-------Проверка словаря----------
     validation() {
         super.validation();
         if (this.lengthDictionary <= 3) {
-            //месседж на экране
+            this.message('Недостаточно слов в словаре');
             console.log("Недостаточно слов в словаре");
             return false;
         }
         return true;
     }
 
-    //--------Инициализация шага---------
-    initStep() {
-        document.getElementById("body-third-game").style.display = 'none';
-        let preloaderDOM = document.getElementsByClassName('lds-default')[0];
-        preloaderDOM.style.display = 'block';
-    }
+
+
+    //*-------Работа с DOM-----------*
 
 
     //--------Отрисовка шага-------------
-    drawStep(i , word) {
+    drawStep() {
         this.drawTextInDOM();
-        this.drawButtonInDOM(i, word);
+        this.drawButtonInDOM();
         document.getElementById("body-third-game").style.display = 'block';
-        let preloaderDOM = document.getElementsByClassName('lds-default')[0];
-        preloaderDOM.style.display = 'none';
+        document.getElementsByClassName('lds-default')[0].style.display = 'none';
     }
 
-    //-----------Отрисовка кнопок-----------
-    drawButtonInDOM(i,word) {
-        //отрисовка кнопоки с правильным ответом
+    //--------Отрисовка и обработка текста на поле---------------
+    drawTextInDOM() {
+        let textDOM = document.getElementById('block-examples-texts');
+        let sentences = this.sentences;
+        let list = '';
+        let template = '<span class="find-word">' + '_'.repeat(this.currentWord.length) + '</span>';
+        sentences = sentences.filter((item, index) => { return index < this.limitSentences });
+        sentences = sentences.map((item) => { return item.replace(new RegExp(this.currentWord.toLowerCase(), 'gi'), template) });
+        for (let i = 0; i < sentences.length; i++) {
+            list += `<li>${sentences[i]}</li>`;
+        }
+        textDOM.innerHTML = `<ul> ${list} </ul>`;
+    }
+
+    //--------Отрисовка кнопоки с правильным ответом-------
+    drawCorrectButton() {
+        let buttonWithCurrentWord = document.getElementsByClassName('button-options')[this.answerButton];
+        buttonWithCurrentWord.innerText = this.currentWord;
+    }
+
+    //--------Отрисовка кнопоки с неправильным ответом-------
+    drawWrongButton(number, word) {
+        let buttonWithRandomWord = document.getElementsByClassName('button-options')[number];
+        buttonWithRandomWord.innerText = word;
+        buttonWithRandomWord.onclick = () => {
+            this.downPoints();
+            buttonWithRandomWord.classList.add('wrong-button');
+        }
+    }
+
+    //--------Отрисовка кнопок c ответами-----------
+    drawButtonInDOM() {
         let orderButton = [0, 1, 2];
-        this.randomArraySort(orderButton);
-        let answer = orderButton[0];
-        this.answerButton = answer;
-        let buttonWithCurrentWord = document.getElementsByClassName('button-options')[answer];
-        buttonWithCurrentWord.onclick = () => { this.upPoints(); }
-        buttonWithCurrentWord.innerText = word;
-
+        this.shakeArray(orderButton);
+        this.answerButton = orderButton[0];
         //выбор 2х случайных слов из словоря:
-        let Word1 = word;
-        let Word2 = word;
-        let lengthDictionary = Object.keys(this.dictionary).length;
+        let word1 = this.currentWord;
+        let word2 = this.currentWord;
 
-        if (lengthDictionary > i)
-            while (Word1 === word) {
-            Word1 = this.getRandomValueArray(this.dictionary).English;
+        while (word1 === this.currentWord) {
+            word1 = this.getRandomValueArray(this.dictionary).English;
         }
-        while (Word2 === word || Word2 === Word1) {
-            Word2 = this.getRandomValueArray(this.dictionary).English;
+        while (word2 === this.currentWord || word2 === word1) {
+            word2 = this.getRandomValueArray(this.dictionary).English;
         }
-        let buttonWithRandomWord1 = document.getElementsByClassName('button-options')[orderButton[1]];
-        buttonWithRandomWord1.onclick = () => { this.downPoints();}
-        buttonWithRandomWord1.innerText = Word1;
-        let buttonWithRandomWord2 = document.getElementsByClassName('button-options')[orderButton[2]];
-        buttonWithRandomWord2.onclick = () => { this.downPoints(); }
-        buttonWithRandomWord2.innerText = Word2;
+        this.drawCorrectButton();
+        this.drawWrongButton(orderButton[1], word1);
+        this.drawWrongButton(orderButton[2], word2);
     }
-
-
-    //----------Шаг игры--------
-    step(i) {
-    this.initStep();
-    let eng = this.dictionary[i].English;
-    console.log(eng);
-        this.getSentense(eng).then((sentense) => {
-            if (!sentense) {
-                if (i == this.lenghtDictionary - 1) {
-                    this.endGame();
-                } else {
-                    this.step(++i);
-                }
-                return;
-            }
-            //отрисовка текста
-            this.sentences = sentense;
-            this.drawStep(i, eng);
-
-
-            //асинхронный запрос(ожидание,когда пользователь даст правильный ответ)
-            this.getAnswer().then(
-                (value) => {
-                    if (value) {
-                        if (i == this.lenghtDictionary - 1) {
-                            this.endGame();
-                        }
-                        else
-                            this.step(++i);
-                    }
-                })
-                .catch(err => console.log(err))
-
-        });
-
-    }
-
-
-//--------Асинхронная функция отслеживающая выбор правильного ответа----------
-    getAnswer() {
-        return new Promise((resolve) => {
-            let index = this.answerButton;
-            document.getElementsByClassName('button-options')[index].addEventListener('click', () => {
-                resolve(true);
-            })
-        });
-    }
-
-
-    //--------Перемешивание массива--------
-    randomArraySort(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-     }
-
 }

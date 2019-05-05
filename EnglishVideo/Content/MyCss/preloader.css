@@ -2,7 +2,10 @@
     display: none;
     position: relative;
     width: 64px;
-    height: 64px;
+}
+
+.up {
+    height:64px;
 }
 
     .lds-default div {

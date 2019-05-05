@@ -5,26 +5,45 @@
 
     constructor() {
         super();
+        this.stage = null;
+        this.layer = null;
+        this.limitWord = 5;
     }
 
-    start() {
+    //---------Инициализация игры---------
+    init() {
+        document.getElementById('game-drag-and-drop').style.display = 'none';
+        document.getElementsByClassName('lds-default')[0].style.display = 'block';
+    }
 
+    //---------Старт игры-------------
+    start() {
+        this.init();
         console.log("Начало игры");
         let connDictionary = this.getWordsFromDictionary();
         connDictionary.then((dictionary) => {
-            this.setDictionary(dictionary);
-            if(!this.validation())
-              return;
+        this.processingDictionary(dictionary);
+        if(!this.validation())
+                return;
             this.createKonva();
+            document.getElementById('game-drag-and-drop').style.display = 'block';
+            document.getElementsByClassName('lds-default')[0].style.display = 'none';
         })
             .catch((error) => console.log(` Ошибка при отрисовки игры ${error}`));
-
     }
 
-
+    //--------Обработка данных словаря-----------
+    processingDictionary(dictionary) {
+        this.setDictionary(dictionary);
+        this.shakeArray(this.dictionary);
+        this.setDictionary(dictionary.filter((item, index) => {
+            if (index < this.limitWord)
+                return item
+        }));
+    }
 
     //--------Отрисовка прямоугольника с текстом-----------
-    drawRectangle(stage,layer, id, word) {
+    drawRectangle(id, word) {
         let color = ['#c68724', '#4cff00', '#165ca3', '#c822bc', '#808080'];
         let valueRandomColor = Math.floor(Math.random() * color.length);
         let textOfWord = new Konva.Text({
@@ -48,34 +67,33 @@
            cornerRadius: 15
         });
         //определение положения фигуры
-        let x = Math.floor(Math.random() * (stage.width() - rect.getWidth()));
-        let y = Math.floor(Math.random() * (stage.height() - rect.getHeight()));
+        let x = Math.floor(Math.random() * (this.stage.width() - rect.getWidth()));
+        let y = Math.floor(Math.random() * (this.stage.height() - rect.getHeight()));
 
-        var pos =({ x: x, y: y });
+
         let group = new Konva.Group({
            x: x,
            y: y,
            draggable: true,
-           name: id.toString(),
+           name: id.toString()
         });
         group.add(rect,textOfWord );
         return group;
 }
-
-    drawDictionary(stage,layer) {
-
+    //--------Отрисовка словаря----------
+    drawDictionary() {
         let dictionary = this.dictionary;
         dictionary.forEach((objectWord) => {
             let eng = objectWord.English;
             let rus = objectWord.Russia;
             let id = objectWord.Id;
             console.log(eng + " " + rus);
-            let rectangleEng = this.drawRectangle(stage,layer, id, eng);
-            let rectangleRus = this.drawRectangle(stage, layer,id, rus);
-            layer.add(rectangleEng);
-            layer.add(rectangleRus);
+            let rectangleEng = this.drawRectangle(id, eng);
+            let rectangleRus = this.drawRectangle(id, rus);
+            this.layer.add(rectangleEng);
+            this.layer.add(rectangleRus);
         });
-        layer.draw();
+        this.layer.draw();
 
     }
 
@@ -97,8 +115,10 @@
         stage.add(layer);
         stage.add(tempLayer);
 
+        this.stage = stage;
+        this.layer = layer;
 
-        this.drawDictionary(stage,layer);
+        this.drawDictionary();
 
  
         //начало перемещение фигуры
@@ -226,15 +246,13 @@
     }
 
     //---------Проверка конца игры---------------
-    checkEnd(layer,stage) {
-        console.log(layer);
+    checkEnd() {
+        let layer = this.layer;
         console.log(layer.children.length);
         if (layer.children.length === 0) {
             console.log('Игра закончена');
-            stage.destroy();
+            this.stage.destroy();
             this.endGame();
         }
-        else
-            console.log('Продолжаем игру');
     }  
 }

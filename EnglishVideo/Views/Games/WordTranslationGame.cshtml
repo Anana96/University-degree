@@ -1,6 +1,7 @@
 ﻿
 
 <link href="~/Content/MyCss/Games.css" rel="stylesheet" />
+<link href="~/Content/MyCss/preloader.css" rel="stylesheet" />
 
 <h2>Игра 2</h2>
 <div class="cont-game">
@@ -14,16 +15,19 @@
         <button id="button-start-game">Начать игру</button>
     </div>
     <div class="body-game">
-        <div id="card-word">
-            <span id="card-eng"></span>
-        </div>
-        <div id="user-write-block">
-            <span>Перевод:</span>
-            <input type="text" id="user-input"/>
-            <button class="button-next">&#8594;</button>
+        <div class="lds-default up"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        <div class="body-word-translation-game">
+            <div id="card-word">
+                <span id="card-eng"></span>
+            </div>
+            <div id="user-write-block">
+                <span>Перевод:</span>
+                <input type="text" id="user-input" />
+                <button class="button-next">&#8594;</button>
+            </div>
         </div>
     </div>
-
+    <div id="message-game"></div>
     <div id="end-game"></div>
 </div>
 

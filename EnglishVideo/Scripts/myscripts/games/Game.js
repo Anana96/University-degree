@@ -13,7 +13,6 @@
 
     start() {
         console.log('Начало игры(родительский класс)');
-        
     }
 
     setDictionary(dictionary) {
@@ -95,16 +94,16 @@
         reset.appendChild(document.createTextNode('Старт'));
         reset.onclick = () => {
             document.getElementById('button-start-game').click();
-            document.getElementsByClassName('body-game')[0].style.display = 'flex';
             endDOM.style.display = 'none';
-        }
+            document.getElementsByClassName('body-game')[0].style.display = 'flex';
+        };
 
         let redirect = document.createElement('button');
         redirect.className = 'button-end';
         redirect.appendChild(document.createTextNode('Выход'));
         redirect.onclick = () => {
             document.location = document.location.origin + '/Games';
-        }
+        };
 
         buttons.appendChild(reset);
         buttons.appendChild(redirect);
@@ -121,7 +120,11 @@
 
     shakeDictionary() {
         this.dictionary.sort(() => { return Math.random() - 0.5; });
-        }
+    }
+
+    shakeArray(array) {
+      array.sort(() => { return Math.random() - 0.5; });
+    }
 
     getRaiting() {
         let url = `${document.location.origin}/Account/GetRaiting`;

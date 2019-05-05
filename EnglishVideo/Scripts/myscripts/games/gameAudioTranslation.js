@@ -2,26 +2,41 @@
 //import Game from './Game';
 
 //export default
-    class AudioTranslationGame extends Game {
+class AudioTranslationGame extends Game {
     constructor() {
         super();
+        this.word = '';
+        this.currentStep = 0;
+        this.currentTimer = 0;
+        document.getElementsByClassName('button-next')[0].onclick = this.nextStep.bind(this);
+        document.getElementById('user-input').onkeyup = this.equalWord.bind(this);
     }
 
 
+    nextStep() {
+        clearInterval(this.currentTimer);
+        console.log(`currentStep = ${this.currentStep}`);
+        this.stepWithInterval(this.currentStep + 1);
+    }
+
+    equalWord() {
+        let inputDOM = document.getElementById('user-input');
+        if (this.word.toLowerCase() === inputDOM.value.toLowerCase()) {
+            this.upPoints();
+            this.nextStep();
+            return;
+        }
+    }
+
     init() {
         this.currentStep = 0;
-        clearInterval(this.currentTimer);
-        this.currentTimer = null;
-        document.getElementsByClassName('button-next')[0].addEventListener('click', () => {
-            clearInterval(this.currentTimer);
-            this.stepWithInterval(this.currentStep + 1);
-        })
+        this.word = '';
     }
 
     start() {
         super.start();
-        console.log("Начало игры");
         this.init();
+        console.log("Начало игры");
         if (this.dictionary) {
             this.shakeDictionary();
             this.stepWithInterval(0);
@@ -29,16 +44,16 @@
         }
         let connDictionary = this.getWordsFromDictionary();
         connDictionary.then((dictionary) => {
-            if (dictionary)
-             dictionary.sort(() => {
-                    return Math.random() - 0.5;
-                });
             this.setDictionary(dictionary);
+            this.shakeDictionary();
             if (!this.validation())
                 return;
             this.stepWithInterval(0);
         })
-            .catch((error) => console.log(` Ошибка при отрисовки игры ${error}`));
+            .catch((error) => {
+                console.log(` Ошибка при отрисовки игры ${error}`)
+                this.message('Технические неполадки. Зайдите позже.');
+            });
     }
 
     //-------Установка аудио в DOM----------
@@ -57,43 +72,31 @@
 
     //-------Работа таймера и проверка ответа(замыкание)-------
     timer() {
-        let word = this.dictionary[this.currentStep].English;
         let time = this.time;
         let timerInDOM = document.getElementById('timer');
-        let inputDOM = document.getElementById('user-input');
         this.setTimerDOM();
-        var currentInterval = setInterval(() => {
+        this.currentTimer = setInterval(() => {
             --time;
             timerInDOM.innerText = time;
-            if (time == 3) {
+            if (time === 3) {
                 timerInDOM.className = 'red-text';
             }
             if (time <= 0) {
                 this.downPoints();
-                clearInterval(this.currentTimer);
-                this.stepWithInterval(this.currentStep + 1);
+                this.nextStep();
                 return;
             }
-            inputDOM.addEventListener('keyup', () => {
-                if (word.toLowerCase() == inputDOM.value.toLowerCase()) {
-                    this.upPoints();
-                    clearInterval(this.currentTimer);
-                    this.stepWithInterval(this.currentStep + 1);
-                    return;
-                }
-            });
         }, 1000);
-        this.currentTimer = currentInterval;
     }
 
     //----------Шаг игры--------
-    stepWithInterval(i) {
+    stepWithInterval(i) {        
         this.currentStep = i;
         document.getElementById('user-input').value = '';
         if (i < this.lenghtDictionary) {
-            let word = this.dictionary[i].English;
+            this.word = this.dictionary[i].English;
             let connOxford = new OxfordApi();
-            connOxford.getAudioExemple(word).then((audio) => {
+            connOxford.getAudioExemple(this.word).then((audio) => {
                 if (!audio) {
                     console.log('аудио пропущено');
                     this.stepWithInterval(i + 1);
@@ -101,8 +104,7 @@
                 }
                 this.setAudioDOM(audio);
                 this.timer();
-            });
-            
+            });   
         }
         else {
             this.endGame();

@@ -1,30 +1,30 @@
 document.getElementById('subtitle-srt').addEventListener('change', getFile)
 
 function getFile(event) {
-  const input = event.target
+    const input = event.target;
     if ('files' in input && input.files.length > 0) {
         readFileContent(input.files[0]).then(content => {
             let nameFile = input.files[0].name.toString();
             let vttData;
-            nameFile = nameFile.substr(0, nameFile.length-4);
+            nameFile = nameFile.substr(0, nameFile.length - 4);
             console.log(nameFile);
             vttData = convert(content);
-         //   download(webvtt,'nameFile',"vtt");
+            //   download(webvtt,'nameFile',"vtt");
             console.log(content);
             console.log(vttData);
             document.getElementById("subtitle-vtt").innerText = vttData;
-          }).catch(error => console.log(error))
+        }).catch(error => console.log(error));
     }
 }
 
 
 function readFileContent(file) {
-  const reader = new FileReader()
-return new Promise((resolve, reject) => {
-  reader.onload = event => resolve(event.target.result)
-  reader.onerror = error => reject(error)
-  reader.readAsText(file)
-})
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+        reader.onload = event => resolve(event.target.result);
+        reader.onerror = error => reject(error);
+        reader.readAsText(file);
+    });
 }
 
 
@@ -89,7 +89,7 @@ function convert(srt) {
     // concatenate muilt-line string separated in array into one
     while (s.length > 3) {
         for (var i = 3; i < s.length; i++) {
-            s[2] += "\n" + s[i]
+            s[2] += "\n" + s[i];
         }
         s.splice(3, s.length - 3);
     }
