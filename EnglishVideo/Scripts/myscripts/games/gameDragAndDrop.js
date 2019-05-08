@@ -44,18 +44,18 @@
 
     //--------Отрисовка прямоугольника с текстом-----------
     drawRectangle(id, word) {
-        let color = ['#c68724', '#4cff00', '#165ca3', '#c822bc', '#808080'];
+        let color = ['#40667c', '#b86650', '#786d6a', '#C98832'];
         let valueRandomColor = Math.floor(Math.random() * color.length);
         let textOfWord = new Konva.Text({
            text: word,
-           fontSize: 18,
-           fontFamily: 'Calibri',
+           fontSize: 25,
+           fontFamily: 'Poiret One',
            fill: '#fff',
            padding: 20,
-           align: 'center'
+           align: 'center',
         });
         let rect = new Konva.Rect({
-           stroke: '#dcdcdc',
+          
            strokeWidth: 1,
            fill: color[valueRandomColor],
            width: textOfWord.getWidth(),
@@ -64,7 +64,7 @@
            shadowBlur: 10,
            shadowOffset: [10, 10],
            shadowOpacity: 0.1,
-           cornerRadius: 15
+           cornerRadius: 30
         });
         //определение положения фигуры
         let x = Math.floor(Math.random() * (this.stage.width() - rect.getWidth()));
@@ -215,7 +215,9 @@
             console.log('drop');
             console.log(e.target);
             let rectLower = e.target.getChildren()[0];
-            rectLower.fill('red');
+            let text = e.target.getChildren()[1];
+            rectLower.fill('#772727'); //красный
+            text.fill('#772727');
           //  text.text('drop ' + e.target.name());
             layer.draw();
         });
@@ -223,8 +225,10 @@
         stage.on("dragenter", function (e) {
             console.log('enter');
             let rectLower = e.target.getChildren()[0];
+            let text = e.target.getChildren()[1];
             colorBack = rectLower.getAttr('fill');
-            rectLower.fill('yellow');
+            text.fill('#966b6b');
+            rectLower.fill('#f5eecb');
             layer.draw();
         });
         //перетаскивание с прикрытой фигуры и возвращение той в исх.состояние
@@ -232,7 +236,9 @@
         console.log('leave');
         console.log(e.target);
         let rectLower = e.target.getChildren()[0];
+        let text = e.target.getChildren()[1];
         rectLower.fill(colorBack);
+        text.fill('white');
        // text.text('dragleave ' + e.target.name());
         layer.draw();
         });

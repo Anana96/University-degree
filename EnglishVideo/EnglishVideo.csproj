@@ -233,6 +233,7 @@
     <Content Include="Content\MyCss\Games.css" />
     <Content Include="Content\MyCss\IndexVideoUser.css" />
     <Content Include="Content\MyCss\Login.css" />
+    <Content Include="Content\MyCss\preloader2.css" />
     <Content Include="Content\MyCss\Video.css" />
     <Content Include="Content\MyCss\VideoCatalog.css" />
     <Content Include="Content\PagedList.css" />

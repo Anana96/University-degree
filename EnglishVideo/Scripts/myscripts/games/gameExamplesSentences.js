@@ -22,15 +22,14 @@ class ExampleSentencesGame extends Game {
         let buttons = document.getElementsByClassName('button-options');
         for (let i = 0; i < buttons.length; i++) {
             buttons[i].classList.remove('wrong-button','success-button');
-       
         }
     }
 
     //---------Старт игры-------------
     start() {
         super.start();
-        this.initStep();
         console.log("Начало игры");
+        this.initStep();
         //если словарь уже получен
         if (this.dictionary) {
             this.shakeArray(this.dictionary);
@@ -69,7 +68,7 @@ class ExampleSentencesGame extends Game {
             this.drawStep();
 
             //асинхронный запрос(ожидание,когда пользователь даст правильный ответ)
-            this.getAnswer().then(() => { this.initStep();this.step(this.currentStep + 1); })
+            this.getAnswer().then(() => { this.initStep(); this.step(this.currentStep + 1); })
         }).catch(err => { console.log(err) });
     }
 

@@ -1,4 +1,10 @@
 ﻿@import url('https://fonts.googleapis.com/css?family=Geostar|Geostar+Fill|Kanit:100');
+@import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond');
+@import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond|Poiret+One');
+h1, h2, h3, h4, h5 {
+    font-family: 'Poiret One', cursive;
+}
+
 #container-konva {
     width: 100%;
     height: 50%;
@@ -10,10 +16,18 @@ button{
     outline:none;
 }
 
-.cont-game{
-    margin-top:20px;
+#points {
+    color: #966b6b;
+    font-size: smaller;
+    background: #f1ede3;
+    border-radius: 20px;
+    padding: 5px;
+}
+
+.cont-game {
+    margin-top: 20px;
     display: flex;
-    justify-content:space-between;
+    justify-content: space-between;
 }
 
 #game-drag-and-drop{
@@ -51,7 +65,9 @@ button{
 }
 
 .title-game, .title-points, .title-time {
-    font-family: 'Amatic SC';
+    font-family: 'Poiret One', cursive;
+    font-size: 28px;
+    color: #f1ede3;
 }
 
 .title-game{
@@ -110,13 +126,13 @@ button{
         background: #8d737363;
         cursor: pointer;
         font-size: 50px;
-        font-family: 'Amatic SC';
+        font-family: 'Poiret One';
         outline: none;
     }
 
-    .red-text{
-        color:red;
-    }
+.red-text {
+    color: #966b6b;
+}
 
 #card-word {
     border: 1px solid #b9b9b9;
@@ -128,9 +144,9 @@ button{
     display: block;
     /*width: 200px;
     height: 200px;*/
-    font-size: 60px;
+    font-size: 50px;
     text-align: center;
-    font-family: 'Amatic SC';
+    font-family: 'Poiret One';
     justify-content: center;
     flex-flow: column wrap;
     align-items: center;
@@ -150,8 +166,8 @@ button{
     /*width: 80%;*/
     background: #8d737363;
     display: none;
-    font-size: 50px;
-    font-family: 'Amatic SC';
+    font-size: 40px;
+    font-family: 'Poiret One';
     display: none;
     justify-content: center;
     align-items: center;
@@ -197,25 +213,27 @@ button{
 
 
 .button-speech-options {
-    width: 100%;
-    text-align: center;
+   position:relative;
+   bottom:20;
+   text-align:center;
+   width:100%;
 }
 
-.button-speech-options button {
-    font-family: 'Amatic SC';
-    width: 200px;
-    border: none;
-    cursor: pointer;
-    border-top: 1px solid gray;
-    outline: none;
-    background: #e6deca;
-    color: #956969;
-    border-radius: 20px;
-    height: 40px;
-}
+    .button-speech-options button {
+        font-family: 'Poiret One';
+        width: 40%;
+        border: none;
+        cursor: pointer;
+        border-top: 1px solid gray;
+        outline: none;
+        background: #e6deca;
+        color: #956969;
+        border-radius: 20px;
+        height: 40px;
+    }
 
 .button-end-options button {
-    font-family: 'Amatic SC';
+    font-family: 'Poiret One';
     width: 200px;
     border: none;
     cursor: pointer;
@@ -234,7 +252,7 @@ button{
 }
 
 .button-options {
-    font-family: 'Amatic SC';
+    font-family: 'Poiret One';
     width: 80%;
     height: 40px;
     border: none;
@@ -266,7 +284,7 @@ button{
 
 
 .result-speech {
-    font-family: 'Amatic SC';
+    font-family: 'Poiret One';
     color: #f2cdb6;
     font-size: 35px;
 }
@@ -282,13 +300,30 @@ button{
 
 .text-speech {
     display:block;
+    position:relative;
+    top:40;
     text-align: center;
     font-size: 25px;
     width: 100%;
 }
 
 .body-speech-game {
-    justify-content: space-around;
+    justify-content: space-between;
+}
+
+#next-text-speech {
+    display: none;
+    background: #956969;
+    color: #e6deca;
+    border: 1px solid;
+}
+
+#stop-speech {
+    border: 1px solid #7c5656;
+}
+
+#result-speech-level{
+    color:white;
 }
 
 .button-next {
@@ -301,7 +336,7 @@ button{
     background: #8d737363;
     cursor: pointer;
     font-size: 30px;
-    font-family: 'Amatic SC';
+    font-family: 'Poiret One';
     outline: none;
 }
 
@@ -311,8 +346,8 @@ button{
 
 #user-write-block {
     margin-top: 10px;
-    font-family: 'Amatic SC';
-    font-size: 40px;
+    font-family: 'Poiret One';
+    font-size: 30px;
 }
 
 .wrong-button {
@@ -320,6 +355,27 @@ button{
     color: #937f65;
 }
 
-    .wrong-button:hover {
-        background: #554141;
+.wrong-button:hover {
+    background: #554141;
+}
+
+#button-start-game {
+    font-family: 'Poiret One', cursive;
+    border: 1px solid #956969;
+    border-radius: 20px;
+    padding: 20px;
+    /* border: none; */
+    color: #956969;
+    width: 40%;
+    height: 30%;
+    background: #e6deca;
+    cursor: pointer;
+    font-size: 40px;
+    outline: none;
+}
+
+    #button-start-game:hover {
+        color: #e6deca;
+        background: #985757;
+        border: 1px solid #e6deca;
     }
