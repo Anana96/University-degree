@@ -205,11 +205,17 @@ namespace EnglishVideo.Controllers
         [HttpGet]
         public JsonResult CurrentUser()
         {
-            Info message = new Info
+            bool UserExist = User.Identity.IsAuthenticated;
+            Info message = new Info();
+            if (UserExist)
             {
-                ResponseBool = User.Identity.IsAuthenticated,
-                UserLogin = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name).Login
-            };
+                message.ResponseBool = true;
+                message.UserLogin = db.Users.FirstOrDefault(u => u.Login == User.Identity.Name).Login;
+            } else
+            {
+                message.ResponseBool = false;
+            }
+
             return Json(message, JsonRequestBehavior.AllowGet);
         }
 

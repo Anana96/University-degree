@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<EnglishVideo.Models.Raitings>
 
-<h2>Рейтинг пользователей:</h2>
+<h3>Рейтинг пользователей:</h3>
 
     <table class="table">
         <tr>
@@ -10,12 +10,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.Raiting)
             </th>
-            <th></th>
         </tr>
     
     @foreach (var item in Model) {
         <tr>
-            <td>
+            <td class="name">
                 @Html.DisplayFor(modelItem => item.Login)
             </td>
             <td>
@@ -26,3 +25,5 @@
     
     </table>
 
+    <link href="~/Content/MyCss/Games.css" rel="stylesheet" />
+    <link href="~/Content/MyCss/Raiting.css" rel="stylesheet" />

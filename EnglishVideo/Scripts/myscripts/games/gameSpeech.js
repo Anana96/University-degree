@@ -28,9 +28,9 @@
     }
     //------Стоп----------
     stop() {
-        this.currentRecognition.stop();
         document.getElementById('stop-speech').style.display = 'none';
         document.getElementById('next-text-speech').style.display = 'inline-block';
+        this.currentRecognition.stop();
     }
 
     //---------Шаг игры--------
@@ -55,8 +55,8 @@
     //---------Распознование речи------------
     recognizer() {
         let resultText = '';
-        let preloaderDOM = document.getElementsByClassName('lds-default')[0];
-        preloaderDOM.style.display = 'block';
+        let preloaderDOM = document.getElementsByClassName('container')[0];
+        preloaderDOM.style.display = 'flex';
         return new Promise((resolve, reject) => {
             if ('webkitSpeechRecognition' in window) {
                 var recognition = this.currentRecognition = new webkitSpeechRecognition();
@@ -71,6 +71,10 @@
                 recognition.onend = function () {
                     console.log('Распознавание завершилось.');
                     preloaderDOM.style.display = 'none';
+                    if (document.getElementById('stop-speech').style.display !== 'none') {
+                        document.getElementById('stop-speech').style.display = 'none';
+                        document.getElementById('next-text-speech').style.display = 'inline-block';
+                    }
                     resolve(resultText);
                 }.bind(this);
                 recognition.start();

@@ -55,7 +55,7 @@
            align: 'center',
         });
         let rect = new Konva.Rect({
-          
+        
            strokeWidth: 1,
            fill: color[valueRandomColor],
            width: textOfWord.getWidth(),
@@ -67,8 +67,8 @@
            cornerRadius: 30
         });
         //определение положения фигуры
-        let x = Math.floor(Math.random() * (this.stage.width() - rect.getWidth()));
-        let y = Math.floor(Math.random() * (this.stage.height() - rect.getHeight()));
+        let x = Math.floor(Math.random() * (this.stage.width() - rect.getWidth()+1));
+        let y = Math.floor(Math.random() * (this.stage.height() - rect.getHeight()+1));
 
 
         let group = new Konva.Group({
@@ -102,8 +102,8 @@
     createKonva() {
         let stage = new Konva.Stage({
             container: 'game-drag-and-drop',
-            width: document.getElementById('container-konva').offsetWidth,
-            height: document.getElementById('container-konva').offsetHeight
+            width: document.getElementById('cont-game').offsetWidth,
+            height: document.getElementById('cont-game').offsetHeight
         });
         let layer = new Konva.Layer();
         let tempLayer = new Konva.Layer();

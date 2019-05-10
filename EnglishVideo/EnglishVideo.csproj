@@ -211,6 +211,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Images\Avatar\avatar_0.png" />
     <Content Include="Content\Images\back.jpg" />
+    <Content Include="Content\Images\game5.png" />
     <Content Include="Content\Images\jeremy-bishop-502211-unsplash.jpg" />
     <Content Include="Content\Images\logo3.png" />
     <Content Include="Content\Images\person.png" />
@@ -234,6 +235,7 @@
     <Content Include="Content\MyCss\IndexVideoUser.css" />
     <Content Include="Content\MyCss\Login.css" />
     <Content Include="Content\MyCss\preloader2.css" />
+    <Content Include="Content\MyCss\Raiting.css" />
     <Content Include="Content\MyCss\Video.css" />
     <Content Include="Content\MyCss\VideoCatalog.css" />
     <Content Include="Content\PagedList.css" />
