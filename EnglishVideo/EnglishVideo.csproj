@@ -270,7 +270,6 @@
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\build\bundle.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
@@ -326,15 +325,14 @@
     <Content Include="Scripts\myscripts\games\AjaxRequest.js" />
     <Content Include="Scripts\myscripts\convertSubtitleSrcInVtt.js" />
     <Content Include="Scripts\myscripts\format-fonts-popper.js" />
-    <Content Include="Scripts\myscripts\games\Audio.js" />
+    <Content Include="Scripts\myscripts\games\ListeningGame.js" />
     <Content Include="Scripts\myscripts\games\Context.js" />
     <Content Include="Scripts\myscripts\games\GameDragAndDrop.js" />
-    <Content Include="Scripts\myscripts\games\GameAudioTranslation.js" />
     <Content Include="Scripts\myscripts\games\index.js" />
     <Content Include="Scripts\myscripts\games\OxfordApi.js" />
     <Content Include="Scripts\myscripts\games\route.js" />
     <Content Include="Scripts\myscripts\games\GameWordTranslation.js" />
-    <Content Include="Scripts\myscripts\games\GameSpeech.js" />
+    <Content Include="Scripts\myscripts\games\SpeechGame.js" />
     <Content Include="Scripts\myscripts\games\Game.js" />
     <Content Include="Scripts\myscripts\games\GameExamplesSentences.js" />
     <Content Include="Scripts\myscripts\index.js" />
@@ -395,6 +393,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Video\Lord\" />
+    <Folder Include="Scripts\build\" />
     <Folder Include="User-data\" />
   </ItemGroup>
   <ItemGroup>
@@ -443,8 +442,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>npm run build --prefix $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,7 +1,7 @@
-﻿//import AjaxRequest from './AjaxRequest'
-//import Game from './Game';
+﻿import AjaxRequest from './AjaxRequest'
+import Game from './Game';
 
-//export default
+export default
     class SpeechGame extends Game{
     constructor() {
         super();

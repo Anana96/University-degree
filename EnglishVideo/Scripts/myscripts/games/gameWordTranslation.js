@@ -1,7 +1,6 @@
-﻿//import Game from './Game';
+﻿import Game from './Game';
 
-//export default
-    class WordTranslationGame extends Game {
+export default class WordTranslationGame extends Game {
     constructor() {
         super();
         this.currentStep = 0;

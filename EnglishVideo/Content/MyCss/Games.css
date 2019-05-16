@@ -38,8 +38,9 @@ button{
 #games {
     display: flex;
     width: 100%;
+    background: #96a0b0;
     flex-flow: column;
-    margin: 40px 0;
+    margin: 10px 0 40px 0;
 }
 
 .games-item h3{
@@ -55,62 +56,79 @@ button{
 .all-raiting a {
     font-family: 'Poiret One', cursive;
     text-decoration: none;
-    color: #f1ede3;
+    color: #f6efe0;
     padding: 10px;
-    background: darkgrey;
+    background: #96a0b0;
     border-radius: 20px;
     font-size: 25px;
 }
 
 
+
+
+#title-all-game {
+    margin-top: 40px;
+    text-align: center;
+    /* padding: 0; */
+    background: #6551513d;
+    /* font-family: 'Kanit', sans-serif; */
+    color: #fff5dc;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    padding: 20px;
+}
+
 .games-item {
-    display:flex;
-    align-items:center;
+    display: flex;
+    align-items: center;
     height: 100px;
+    color: #e6deca;
+    padding-left:20px;
     margin: 2px;
     position: relative;
     background: #584f4f5c;
     border: 1px solid #716e6e;
-    border-radius: 20px;
+
 }
 
 
+
 .games-item-1 {
-    background: #aa6565 url('../../Content/Images/game1.png') right no-repeat;
+    background: #aa6565 url('../../Content/Images/game1.png') no-repeat;
+    background-position: 90%;
     background-size: auto 98px;
 }
 
 .games-item-2 {
-    background: #aa6565 url('../../Content/Images/game2.png') right no-repeat;
+    background: #aa6565 url('../../Content/Images/game2.png') no-repeat;
     background-size: auto 98px;
+    background-position: 90%;
 }
 
 .games-item-3 {
-    background: #aa6565 url('../../Content/Images/game3.png') right no-repeat;
+    background: #aa6565 url('../../Content/Images/game3.png') no-repeat;
     background-size: auto 98px;
+    background-position: 90%;
 }
 
 .games-item-4 {
-    background: #aa6565 url('../../Content/Images/game4.png') right no-repeat;
+    background: #aa6565 url('../../Content/Images/game4.png') no-repeat;
     background-size: auto 98px;
+    background-position: 90%;
 }
 
 .games-item-5 {
-    background: #aa6565 url('../../Content/Images/game5.png') right no-repeat;
+    background: #aa6565 url('../../Content/Images/game5.png') no-repeat;
     background-size: auto 98px;
+    background-position: 90%;
 }
 
 
-.games-item a:hover {
-    color: #ffe4c4;
-}
 
 #points-main {
     color:#999090;
 }
 .games-item a {
-    padding-left: 20px;
-    color: #e6deca;
     text-decoration: none;
     font-family: 'Kanit', sans-serif;
 }

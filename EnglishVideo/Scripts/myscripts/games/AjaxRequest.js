@@ -1,4 +1,4 @@
-﻿//export default
+﻿export default
     class AjaxRequest {
     constructor(url, method = 'GET') {
         this.url = url;

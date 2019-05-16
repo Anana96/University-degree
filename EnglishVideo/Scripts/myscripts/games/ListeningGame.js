@@ -1,8 +1,7 @@
-﻿//import OxfordApi from './OxfordApi'
-//import Game from './Game';
+﻿import OxfordApi from './OxfordApi'
+import Game from './Game';
 
-//export default
-class AudioTranslationGame extends Game {
+export default class ListeningGame extends Game {
     constructor() {
         super();
         this.audioArray = [];

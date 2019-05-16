@@ -1,7 +1,6 @@
-﻿//import AjaxRequest from './AjaxRequest'
+﻿import AjaxRequest from './AjaxRequest'
 
-//export default
-    class Game {
+export default class Game {
 
     constructor() {
         this.points = 0;

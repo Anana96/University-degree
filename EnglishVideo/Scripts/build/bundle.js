@@ -1,705 +1,4 @@
 /******/ (function(modules) { // webpackBootstrap
-/******/ 	function hotDisposeChunk(chunkId) {
-/******/ 		delete installedChunks[chunkId];
-/******/ 	}
-/******/ 	var parentHotUpdateCallback = window["webpackHotUpdate"];
-/******/ 	window["webpackHotUpdate"] = // eslint-disable-next-line no-unused-vars
-/******/ 	function webpackHotUpdateCallback(chunkId, moreModules) {
-/******/ 		hotAddUpdateChunk(chunkId, moreModules);
-/******/ 		if (parentHotUpdateCallback) parentHotUpdateCallback(chunkId, moreModules);
-/******/ 	} ;
-/******/
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	function hotDownloadUpdateChunk(chunkId) {
-/******/ 		var script = document.createElement("script");
-/******/ 		script.charset = "utf-8";
-/******/ 		script.src = __webpack_require__.p + "" + chunkId + "." + hotCurrentHash + ".hot-update.js";
-/******/ 		if (null) script.crossOrigin = null;
-/******/ 		document.head.appendChild(script);
-/******/ 	}
-/******/
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	function hotDownloadManifest(requestTimeout) {
-/******/ 		requestTimeout = requestTimeout || 10000;
-/******/ 		return new Promise(function(resolve, reject) {
-/******/ 			if (typeof XMLHttpRequest === "undefined") {
-/******/ 				return reject(new Error("No browser support"));
-/******/ 			}
-/******/ 			try {
-/******/ 				var request = new XMLHttpRequest();
-/******/ 				var requestPath = __webpack_require__.p + "" + hotCurrentHash + ".hot-update.json";
-/******/ 				request.open("GET", requestPath, true);
-/******/ 				request.timeout = requestTimeout;
-/******/ 				request.send(null);
-/******/ 			} catch (err) {
-/******/ 				return reject(err);
-/******/ 			}
-/******/ 			request.onreadystatechange = function() {
-/******/ 				if (request.readyState !== 4) return;
-/******/ 				if (request.status === 0) {
-/******/ 					// timeout
-/******/ 					reject(
-/******/ 						new Error("Manifest request to " + requestPath + " timed out.")
-/******/ 					);
-/******/ 				} else if (request.status === 404) {
-/******/ 					// no update available
-/******/ 					resolve();
-/******/ 				} else if (request.status !== 200 && request.status !== 304) {
-/******/ 					// other failure
-/******/ 					reject(new Error("Manifest request to " + requestPath + " failed."));
-/******/ 				} else {
-/******/ 					// success
-/******/ 					try {
-/******/ 						var update = JSON.parse(request.responseText);
-/******/ 					} catch (e) {
-/******/ 						reject(e);
-/******/ 						return;
-/******/ 					}
-/******/ 					resolve(update);
-/******/ 				}
-/******/ 			};
-/******/ 		});
-/******/ 	}
-/******/
-/******/ 	var hotApplyOnUpdate = true;
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "acb1bd04d792cb0f72e6";
-/******/ 	var hotRequestTimeout = 10000;
-/******/ 	var hotCurrentModuleData = {};
-/******/ 	var hotCurrentChildModule;
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentParents = [];
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentParentsTemp = [];
-/******/
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	function hotCreateRequire(moduleId) {
-/******/ 		var me = installedModules[moduleId];
-/******/ 		if (!me) return __webpack_require__;
-/******/ 		var fn = function(request) {
-/******/ 			if (me.hot.active) {
-/******/ 				if (installedModules[request]) {
-/******/ 					if (installedModules[request].parents.indexOf(moduleId) === -1) {
-/******/ 						installedModules[request].parents.push(moduleId);
-/******/ 					}
-/******/ 				} else {
-/******/ 					hotCurrentParents = [moduleId];
-/******/ 					hotCurrentChildModule = request;
-/******/ 				}
-/******/ 				if (me.children.indexOf(request) === -1) {
-/******/ 					me.children.push(request);
-/******/ 				}
-/******/ 			} else {
-/******/ 				console.warn(
-/******/ 					"[HMR] unexpected require(" +
-/******/ 						request +
-/******/ 						") from disposed module " +
-/******/ 						moduleId
-/******/ 				);
-/******/ 				hotCurrentParents = [];
-/******/ 			}
-/******/ 			return __webpack_require__(request);
-/******/ 		};
-/******/ 		var ObjectFactory = function ObjectFactory(name) {
-/******/ 			return {
-/******/ 				configurable: true,
-/******/ 				enumerable: true,
-/******/ 				get: function() {
-/******/ 					return __webpack_require__[name];
-/******/ 				},
-/******/ 				set: function(value) {
-/******/ 					__webpack_require__[name] = value;
-/******/ 				}
-/******/ 			};
-/******/ 		};
-/******/ 		for (var name in __webpack_require__) {
-/******/ 			if (
-/******/ 				Object.prototype.hasOwnProperty.call(__webpack_require__, name) &&
-/******/ 				name !== "e" &&
-/******/ 				name !== "t"
-/******/ 			) {
-/******/ 				Object.defineProperty(fn, name, ObjectFactory(name));
-/******/ 			}
-/******/ 		}
-/******/ 		fn.e = function(chunkId) {
-/******/ 			if (hotStatus === "ready") hotSetStatus("prepare");
-/******/ 			hotChunksLoading++;
-/******/ 			return __webpack_require__.e(chunkId).then(finishChunkLoading, function(err) {
-/******/ 				finishChunkLoading();
-/******/ 				throw err;
-/******/ 			});
-/******/
-/******/ 			function finishChunkLoading() {
-/******/ 				hotChunksLoading--;
-/******/ 				if (hotStatus === "prepare") {
-/******/ 					if (!hotWaitingFilesMap[chunkId]) {
-/******/ 						hotEnsureUpdateChunk(chunkId);
-/******/ 					}
-/******/ 					if (hotChunksLoading === 0 && hotWaitingFiles === 0) {
-/******/ 						hotUpdateDownloaded();
-/******/ 					}
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 		fn.t = function(value, mode) {
-/******/ 			if (mode & 1) value = fn(value);
-/******/ 			return __webpack_require__.t(value, mode & ~1);
-/******/ 		};
-/******/ 		return fn;
-/******/ 	}
-/******/
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	function hotCreateModule(moduleId) {
-/******/ 		var hot = {
-/******/ 			// private stuff
-/******/ 			_acceptedDependencies: {},
-/******/ 			_declinedDependencies: {},
-/******/ 			_selfAccepted: false,
-/******/ 			_selfDeclined: false,
-/******/ 			_disposeHandlers: [],
-/******/ 			_main: hotCurrentChildModule !== moduleId,
-/******/
-/******/ 			// Module API
-/******/ 			active: true,
-/******/ 			accept: function(dep, callback) {
-/******/ 				if (dep === undefined) hot._selfAccepted = true;
-/******/ 				else if (typeof dep === "function") hot._selfAccepted = dep;
-/******/ 				else if (typeof dep === "object")
-/******/ 					for (var i = 0; i < dep.length; i++)
-/******/ 						hot._acceptedDependencies[dep[i]] = callback || function() {};
-/******/ 				else hot._acceptedDependencies[dep] = callback || function() {};
-/******/ 			},
-/******/ 			decline: function(dep) {
-/******/ 				if (dep === undefined) hot._selfDeclined = true;
-/******/ 				else if (typeof dep === "object")
-/******/ 					for (var i = 0; i < dep.length; i++)
-/******/ 						hot._declinedDependencies[dep[i]] = true;
-/******/ 				else hot._declinedDependencies[dep] = true;
-/******/ 			},
-/******/ 			dispose: function(callback) {
-/******/ 				hot._disposeHandlers.push(callback);
-/******/ 			},
-/******/ 			addDisposeHandler: function(callback) {
-/******/ 				hot._disposeHandlers.push(callback);
-/******/ 			},
-/******/ 			removeDisposeHandler: function(callback) {
-/******/ 				var idx = hot._disposeHandlers.indexOf(callback);
-/******/ 				if (idx >= 0) hot._disposeHandlers.splice(idx, 1);
-/******/ 			},
-/******/
-/******/ 			// Management API
-/******/ 			check: hotCheck,
-/******/ 			apply: hotApply,
-/******/ 			status: function(l) {
-/******/ 				if (!l) return hotStatus;
-/******/ 				hotStatusHandlers.push(l);
-/******/ 			},
-/******/ 			addStatusHandler: function(l) {
-/******/ 				hotStatusHandlers.push(l);
-/******/ 			},
-/******/ 			removeStatusHandler: function(l) {
-/******/ 				var idx = hotStatusHandlers.indexOf(l);
-/******/ 				if (idx >= 0) hotStatusHandlers.splice(idx, 1);
-/******/ 			},
-/******/
-/******/ 			//inherit from previous dispose call
-/******/ 			data: hotCurrentModuleData[moduleId]
-/******/ 		};
-/******/ 		hotCurrentChildModule = undefined;
-/******/ 		return hot;
-/******/ 	}
-/******/
-/******/ 	var hotStatusHandlers = [];
-/******/ 	var hotStatus = "idle";
-/******/
-/******/ 	function hotSetStatus(newStatus) {
-/******/ 		hotStatus = newStatus;
-/******/ 		for (var i = 0; i < hotStatusHandlers.length; i++)
-/******/ 			hotStatusHandlers[i].call(null, newStatus);
-/******/ 	}
-/******/
-/******/ 	// while downloading
-/******/ 	var hotWaitingFiles = 0;
-/******/ 	var hotChunksLoading = 0;
-/******/ 	var hotWaitingFilesMap = {};
-/******/ 	var hotRequestedFilesMap = {};
-/******/ 	var hotAvailableFilesMap = {};
-/******/ 	var hotDeferred;
-/******/
-/******/ 	// The update info
-/******/ 	var hotUpdate, hotUpdateNewHash;
-/******/
-/******/ 	function toModuleId(id) {
-/******/ 		var isNumber = +id + "" === id;
-/******/ 		return isNumber ? +id : id;
-/******/ 	}
-/******/
-/******/ 	function hotCheck(apply) {
-/******/ 		if (hotStatus !== "idle") {
-/******/ 			throw new Error("check() is only allowed in idle status");
-/******/ 		}
-/******/ 		hotApplyOnUpdate = apply;
-/******/ 		hotSetStatus("check");
-/******/ 		return hotDownloadManifest(hotRequestTimeout).then(function(update) {
-/******/ 			if (!update) {
-/******/ 				hotSetStatus("idle");
-/******/ 				return null;
-/******/ 			}
-/******/ 			hotRequestedFilesMap = {};
-/******/ 			hotWaitingFilesMap = {};
-/******/ 			hotAvailableFilesMap = update.c;
-/******/ 			hotUpdateNewHash = update.h;
-/******/
-/******/ 			hotSetStatus("prepare");
-/******/ 			var promise = new Promise(function(resolve, reject) {
-/******/ 				hotDeferred = {
-/******/ 					resolve: resolve,
-/******/ 					reject: reject
-/******/ 				};
-/******/ 			});
-/******/ 			hotUpdate = {};
-/******/ 			var chunkId = "main";
-/******/ 			// eslint-disable-next-line no-lone-blocks
-/******/ 			{
-/******/ 				/*globals chunkId */
-/******/ 				hotEnsureUpdateChunk(chunkId);
-/******/ 			}
-/******/ 			if (
-/******/ 				hotStatus === "prepare" &&
-/******/ 				hotChunksLoading === 0 &&
-/******/ 				hotWaitingFiles === 0
-/******/ 			) {
-/******/ 				hotUpdateDownloaded();
-/******/ 			}
-/******/ 			return promise;
-/******/ 		});
-/******/ 	}
-/******/
-/******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	function hotAddUpdateChunk(chunkId, moreModules) {
-/******/ 		if (!hotAvailableFilesMap[chunkId] || !hotRequestedFilesMap[chunkId])
-/******/ 			return;
-/******/ 		hotRequestedFilesMap[chunkId] = false;
-/******/ 		for (var moduleId in moreModules) {
-/******/ 			if (Object.prototype.hasOwnProperty.call(moreModules, moduleId)) {
-/******/ 				hotUpdate[moduleId] = moreModules[moduleId];
-/******/ 			}
-/******/ 		}
-/******/ 		if (--hotWaitingFiles === 0 && hotChunksLoading === 0) {
-/******/ 			hotUpdateDownloaded();
-/******/ 		}
-/******/ 	}
-/******/
-/******/ 	function hotEnsureUpdateChunk(chunkId) {
-/******/ 		if (!hotAvailableFilesMap[chunkId]) {
-/******/ 			hotWaitingFilesMap[chunkId] = true;
-/******/ 		} else {
-/******/ 			hotRequestedFilesMap[chunkId] = true;
-/******/ 			hotWaitingFiles++;
-/******/ 			hotDownloadUpdateChunk(chunkId);
-/******/ 		}
-/******/ 	}
-/******/
-/******/ 	function hotUpdateDownloaded() {
-/******/ 		hotSetStatus("ready");
-/******/ 		var deferred = hotDeferred;
-/******/ 		hotDeferred = null;
-/******/ 		if (!deferred) return;
-/******/ 		if (hotApplyOnUpdate) {
-/******/ 			// Wrap deferred object in Promise to mark it as a well-handled Promise to
-/******/ 			// avoid triggering uncaught exception warning in Chrome.
-/******/ 			// See https://bugs.chromium.org/p/chromium/issues/detail?id=465666
-/******/ 			Promise.resolve()
-/******/ 				.then(function() {
-/******/ 					return hotApply(hotApplyOnUpdate);
-/******/ 				})
-/******/ 				.then(
-/******/ 					function(result) {
-/******/ 						deferred.resolve(result);
-/******/ 					},
-/******/ 					function(err) {
-/******/ 						deferred.reject(err);
-/******/ 					}
-/******/ 				);
-/******/ 		} else {
-/******/ 			var outdatedModules = [];
-/******/ 			for (var id in hotUpdate) {
-/******/ 				if (Object.prototype.hasOwnProperty.call(hotUpdate, id)) {
-/******/ 					outdatedModules.push(toModuleId(id));
-/******/ 				}
-/******/ 			}
-/******/ 			deferred.resolve(outdatedModules);
-/******/ 		}
-/******/ 	}
-/******/
-/******/ 	function hotApply(options) {
-/******/ 		if (hotStatus !== "ready")
-/******/ 			throw new Error("apply() is only allowed in ready status");
-/******/ 		options = options || {};
-/******/
-/******/ 		var cb;
-/******/ 		var i;
-/******/ 		var j;
-/******/ 		var module;
-/******/ 		var moduleId;
-/******/
-/******/ 		function getAffectedStuff(updateModuleId) {
-/******/ 			var outdatedModules = [updateModuleId];
-/******/ 			var outdatedDependencies = {};
-/******/
-/******/ 			var queue = outdatedModules.slice().map(function(id) {
-/******/ 				return {
-/******/ 					chain: [id],
-/******/ 					id: id
-/******/ 				};
-/******/ 			});
-/******/ 			while (queue.length > 0) {
-/******/ 				var queueItem = queue.pop();
-/******/ 				var moduleId = queueItem.id;
-/******/ 				var chain = queueItem.chain;
-/******/ 				module = installedModules[moduleId];
-/******/ 				if (!module || module.hot._selfAccepted) continue;
-/******/ 				if (module.hot._selfDeclined) {
-/******/ 					return {
-/******/ 						type: "self-declined",
-/******/ 						chain: chain,
-/******/ 						moduleId: moduleId
-/******/ 					};
-/******/ 				}
-/******/ 				if (module.hot._main) {
-/******/ 					return {
-/******/ 						type: "unaccepted",
-/******/ 						chain: chain,
-/******/ 						moduleId: moduleId
-/******/ 					};
-/******/ 				}
-/******/ 				for (var i = 0; i < module.parents.length; i++) {
-/******/ 					var parentId = module.parents[i];
-/******/ 					var parent = installedModules[parentId];
-/******/ 					if (!parent) continue;
-/******/ 					if (parent.hot._declinedDependencies[moduleId]) {
-/******/ 						return {
-/******/ 							type: "declined",
-/******/ 							chain: chain.concat([parentId]),
-/******/ 							moduleId: moduleId,
-/******/ 							parentId: parentId
-/******/ 						};
-/******/ 					}
-/******/ 					if (outdatedModules.indexOf(parentId) !== -1) continue;
-/******/ 					if (parent.hot._acceptedDependencies[moduleId]) {
-/******/ 						if (!outdatedDependencies[parentId])
-/******/ 							outdatedDependencies[parentId] = [];
-/******/ 						addAllToSet(outdatedDependencies[parentId], [moduleId]);
-/******/ 						continue;
-/******/ 					}
-/******/ 					delete outdatedDependencies[parentId];
-/******/ 					outdatedModules.push(parentId);
-/******/ 					queue.push({
-/******/ 						chain: chain.concat([parentId]),
-/******/ 						id: parentId
-/******/ 					});
-/******/ 				}
-/******/ 			}
-/******/
-/******/ 			return {
-/******/ 				type: "accepted",
-/******/ 				moduleId: updateModuleId,
-/******/ 				outdatedModules: outdatedModules,
-/******/ 				outdatedDependencies: outdatedDependencies
-/******/ 			};
-/******/ 		}
-/******/
-/******/ 		function addAllToSet(a, b) {
-/******/ 			for (var i = 0; i < b.length; i++) {
-/******/ 				var item = b[i];
-/******/ 				if (a.indexOf(item) === -1) a.push(item);
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// at begin all updates modules are outdated
-/******/ 		// the "outdated" status can propagate to parents if they don't accept the children
-/******/ 		var outdatedDependencies = {};
-/******/ 		var outdatedModules = [];
-/******/ 		var appliedUpdate = {};
-/******/
-/******/ 		var warnUnexpectedRequire = function warnUnexpectedRequire() {
-/******/ 			console.warn(
-/******/ 				"[HMR] unexpected require(" + result.moduleId + ") to disposed module"
-/******/ 			);
-/******/ 		};
-/******/
-/******/ 		for (var id in hotUpdate) {
-/******/ 			if (Object.prototype.hasOwnProperty.call(hotUpdate, id)) {
-/******/ 				moduleId = toModuleId(id);
-/******/ 				/** @type {TODO} */
-/******/ 				var result;
-/******/ 				if (hotUpdate[id]) {
-/******/ 					result = getAffectedStuff(moduleId);
-/******/ 				} else {
-/******/ 					result = {
-/******/ 						type: "disposed",
-/******/ 						moduleId: id
-/******/ 					};
-/******/ 				}
-/******/ 				/** @type {Error|false} */
-/******/ 				var abortError = false;
-/******/ 				var doApply = false;
-/******/ 				var doDispose = false;
-/******/ 				var chainInfo = "";
-/******/ 				if (result.chain) {
-/******/ 					chainInfo = "\nUpdate propagation: " + result.chain.join(" -> ");
-/******/ 				}
-/******/ 				switch (result.type) {
-/******/ 					case "self-declined":
-/******/ 						if (options.onDeclined) options.onDeclined(result);
-/******/ 						if (!options.ignoreDeclined)
-/******/ 							abortError = new Error(
-/******/ 								"Aborted because of self decline: " +
-/******/ 									result.moduleId +
-/******/ 									chainInfo
-/******/ 							);
-/******/ 						break;
-/******/ 					case "declined":
-/******/ 						if (options.onDeclined) options.onDeclined(result);
-/******/ 						if (!options.ignoreDeclined)
-/******/ 							abortError = new Error(
-/******/ 								"Aborted because of declined dependency: " +
-/******/ 									result.moduleId +
-/******/ 									" in " +
-/******/ 									result.parentId +
-/******/ 									chainInfo
-/******/ 							);
-/******/ 						break;
-/******/ 					case "unaccepted":
-/******/ 						if (options.onUnaccepted) options.onUnaccepted(result);
-/******/ 						if (!options.ignoreUnaccepted)
-/******/ 							abortError = new Error(
-/******/ 								"Aborted because " + moduleId + " is not accepted" + chainInfo
-/******/ 							);
-/******/ 						break;
-/******/ 					case "accepted":
-/******/ 						if (options.onAccepted) options.onAccepted(result);
-/******/ 						doApply = true;
-/******/ 						break;
-/******/ 					case "disposed":
-/******/ 						if (options.onDisposed) options.onDisposed(result);
-/******/ 						doDispose = true;
-/******/ 						break;
-/******/ 					default:
-/******/ 						throw new Error("Unexception type " + result.type);
-/******/ 				}
-/******/ 				if (abortError) {
-/******/ 					hotSetStatus("abort");
-/******/ 					return Promise.reject(abortError);
-/******/ 				}
-/******/ 				if (doApply) {
-/******/ 					appliedUpdate[moduleId] = hotUpdate[moduleId];
-/******/ 					addAllToSet(outdatedModules, result.outdatedModules);
-/******/ 					for (moduleId in result.outdatedDependencies) {
-/******/ 						if (
-/******/ 							Object.prototype.hasOwnProperty.call(
-/******/ 								result.outdatedDependencies,
-/******/ 								moduleId
-/******/ 							)
-/******/ 						) {
-/******/ 							if (!outdatedDependencies[moduleId])
-/******/ 								outdatedDependencies[moduleId] = [];
-/******/ 							addAllToSet(
-/******/ 								outdatedDependencies[moduleId],
-/******/ 								result.outdatedDependencies[moduleId]
-/******/ 							);
-/******/ 						}
-/******/ 					}
-/******/ 				}
-/******/ 				if (doDispose) {
-/******/ 					addAllToSet(outdatedModules, [result.moduleId]);
-/******/ 					appliedUpdate[moduleId] = warnUnexpectedRequire;
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// Store self accepted outdated modules to require them later by the module system
-/******/ 		var outdatedSelfAcceptedModules = [];
-/******/ 		for (i = 0; i < outdatedModules.length; i++) {
-/******/ 			moduleId = outdatedModules[i];
-/******/ 			if (
-/******/ 				installedModules[moduleId] &&
-/******/ 				installedModules[moduleId].hot._selfAccepted
-/******/ 			)
-/******/ 				outdatedSelfAcceptedModules.push({
-/******/ 					module: moduleId,
-/******/ 					errorHandler: installedModules[moduleId].hot._selfAccepted
-/******/ 				});
-/******/ 		}
-/******/
-/******/ 		// Now in "dispose" phase
-/******/ 		hotSetStatus("dispose");
-/******/ 		Object.keys(hotAvailableFilesMap).forEach(function(chunkId) {
-/******/ 			if (hotAvailableFilesMap[chunkId] === false) {
-/******/ 				hotDisposeChunk(chunkId);
-/******/ 			}
-/******/ 		});
-/******/
-/******/ 		var idx;
-/******/ 		var queue = outdatedModules.slice();
-/******/ 		while (queue.length > 0) {
-/******/ 			moduleId = queue.pop();
-/******/ 			module = installedModules[moduleId];
-/******/ 			if (!module) continue;
-/******/
-/******/ 			var data = {};
-/******/
-/******/ 			// Call dispose handlers
-/******/ 			var disposeHandlers = module.hot._disposeHandlers;
-/******/ 			for (j = 0; j < disposeHandlers.length; j++) {
-/******/ 				cb = disposeHandlers[j];
-/******/ 				cb(data);
-/******/ 			}
-/******/ 			hotCurrentModuleData[moduleId] = data;
-/******/
-/******/ 			// disable module (this disables requires from this module)
-/******/ 			module.hot.active = false;
-/******/
-/******/ 			// remove module from cache
-/******/ 			delete installedModules[moduleId];
-/******/
-/******/ 			// when disposing there is no need to call dispose handler
-/******/ 			delete outdatedDependencies[moduleId];
-/******/
-/******/ 			// remove "parents" references from all children
-/******/ 			for (j = 0; j < module.children.length; j++) {
-/******/ 				var child = installedModules[module.children[j]];
-/******/ 				if (!child) continue;
-/******/ 				idx = child.parents.indexOf(moduleId);
-/******/ 				if (idx >= 0) {
-/******/ 					child.parents.splice(idx, 1);
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// remove outdated dependency from module children
-/******/ 		var dependency;
-/******/ 		var moduleOutdatedDependencies;
-/******/ 		for (moduleId in outdatedDependencies) {
-/******/ 			if (
-/******/ 				Object.prototype.hasOwnProperty.call(outdatedDependencies, moduleId)
-/******/ 			) {
-/******/ 				module = installedModules[moduleId];
-/******/ 				if (module) {
-/******/ 					moduleOutdatedDependencies = outdatedDependencies[moduleId];
-/******/ 					for (j = 0; j < moduleOutdatedDependencies.length; j++) {
-/******/ 						dependency = moduleOutdatedDependencies[j];
-/******/ 						idx = module.children.indexOf(dependency);
-/******/ 						if (idx >= 0) module.children.splice(idx, 1);
-/******/ 					}
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// Not in "apply" phase
-/******/ 		hotSetStatus("apply");
-/******/
-/******/ 		hotCurrentHash = hotUpdateNewHash;
-/******/
-/******/ 		// insert new code
-/******/ 		for (moduleId in appliedUpdate) {
-/******/ 			if (Object.prototype.hasOwnProperty.call(appliedUpdate, moduleId)) {
-/******/ 				modules[moduleId] = appliedUpdate[moduleId];
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// call accept handlers
-/******/ 		var error = null;
-/******/ 		for (moduleId in outdatedDependencies) {
-/******/ 			if (
-/******/ 				Object.prototype.hasOwnProperty.call(outdatedDependencies, moduleId)
-/******/ 			) {
-/******/ 				module = installedModules[moduleId];
-/******/ 				if (module) {
-/******/ 					moduleOutdatedDependencies = outdatedDependencies[moduleId];
-/******/ 					var callbacks = [];
-/******/ 					for (i = 0; i < moduleOutdatedDependencies.length; i++) {
-/******/ 						dependency = moduleOutdatedDependencies[i];
-/******/ 						cb = module.hot._acceptedDependencies[dependency];
-/******/ 						if (cb) {
-/******/ 							if (callbacks.indexOf(cb) !== -1) continue;
-/******/ 							callbacks.push(cb);
-/******/ 						}
-/******/ 					}
-/******/ 					for (i = 0; i < callbacks.length; i++) {
-/******/ 						cb = callbacks[i];
-/******/ 						try {
-/******/ 							cb(moduleOutdatedDependencies);
-/******/ 						} catch (err) {
-/******/ 							if (options.onErrored) {
-/******/ 								options.onErrored({
-/******/ 									type: "accept-errored",
-/******/ 									moduleId: moduleId,
-/******/ 									dependencyId: moduleOutdatedDependencies[i],
-/******/ 									error: err
-/******/ 								});
-/******/ 							}
-/******/ 							if (!options.ignoreErrored) {
-/******/ 								if (!error) error = err;
-/******/ 							}
-/******/ 						}
-/******/ 					}
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// Load self accepted modules
-/******/ 		for (i = 0; i < outdatedSelfAcceptedModules.length; i++) {
-/******/ 			var item = outdatedSelfAcceptedModules[i];
-/******/ 			moduleId = item.module;
-/******/ 			hotCurrentParents = [moduleId];
-/******/ 			try {
-/******/ 				__webpack_require__(moduleId);
-/******/ 			} catch (err) {
-/******/ 				if (typeof item.errorHandler === "function") {
-/******/ 					try {
-/******/ 						item.errorHandler(err);
-/******/ 					} catch (err2) {
-/******/ 						if (options.onErrored) {
-/******/ 							options.onErrored({
-/******/ 								type: "self-accept-error-handler-errored",
-/******/ 								moduleId: moduleId,
-/******/ 								error: err2,
-/******/ 								originalError: err
-/******/ 							});
-/******/ 						}
-/******/ 						if (!options.ignoreErrored) {
-/******/ 							if (!error) error = err2;
-/******/ 						}
-/******/ 						if (!error) error = err;
-/******/ 					}
-/******/ 				} else {
-/******/ 					if (options.onErrored) {
-/******/ 						options.onErrored({
-/******/ 							type: "self-accept-errored",
-/******/ 							moduleId: moduleId,
-/******/ 							error: err
-/******/ 						});
-/******/ 					}
-/******/ 					if (!options.ignoreErrored) {
-/******/ 						if (!error) error = err;
-/******/ 					}
-/******/ 				}
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		// handle errors in accept handlers and self accepted module load
-/******/ 		if (error) {
-/******/ 			hotSetStatus("fail");
-/******/ 			return Promise.reject(error);
-/******/ 		}
-/******/
-/******/ 		hotSetStatus("idle");
-/******/ 		return new Promise(function(resolve) {
-/******/ 			resolve(outdatedModules);
-/******/ 		});
-/******/ 	}
-/******/
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -714,14 +13,11 @@
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
-/******/ 			exports: {},
-/******/ 			hot: hotCreateModule(moduleId),
-/******/ 			parents: (hotCurrentParentsTemp = hotCurrentParents, hotCurrentParents = [], hotCurrentParentsTemp),
-/******/ 			children: []
+/******/ 			exports: {}
 /******/ 		};
 /******/
 /******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, hotCreateRequire(moduleId));
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
@@ -783,24 +79,142 @@
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
-/******/ 	// __webpack_hash__
-/******/ 	__webpack_require__.h = function() { return hotCurrentHash; };
-/******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return hotCreateRequire("./Scripts/myscripts/games/index.js")(__webpack_require__.s = "./Scripts/myscripts/games/index.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./Scripts/myscripts/games/index.js");
 /******/ })
 /************************************************************************/
 /******/ ({
+
+/***/ "./Scripts/myscripts/games/AjaxRequest.js":
+/*!************************************************!*\
+  !*** ./Scripts/myscripts/games/AjaxRequest.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return AjaxRequest; });\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nvar AjaxRequest =\n/*#__PURE__*/\nfunction () {\n  function AjaxRequest(url) {\n    var method = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'GET';\n\n    _classCallCheck(this, AjaxRequest);\n\n    this.url = url;\n    this.method = method;\n  }\n\n  _createClass(AjaxRequest, [{\n    key: \"getJson\",\n    value: function getJson() {\n      return fetch(this.url, {\n        method: this.method\n      }).then(function (response) {\n        return response.json();\n      }).catch(function (error) {\n        console.log(\"Ошибка обращения к серверу \" + error.message);\n      });\n    }\n  }]);\n\n  return AjaxRequest;\n}();\n\n\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/AjaxRequest.js?");
+
+/***/ }),
+
+/***/ "./Scripts/myscripts/games/Context.js":
+/*!********************************************!*\
+  !*** ./Scripts/myscripts/games/Context.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return Context; });\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nvar Context =\n/*#__PURE__*/\nfunction () {\n  function Context() {\n    _classCallCheck(this, Context);\n\n    this.game = null;\n  }\n\n  _createClass(Context, [{\n    key: \"setGame\",\n    value: function setGame(game) {\n      this.game = game;\n    }\n  }, {\n    key: \"startGame\",\n    value: function startGame() {\n      var _this = this;\n\n      if (!document.getElementById('button-start-game')) return;\n      document.getElementById('button-start-game').addEventListener('click', function () {\n        document.getElementsByClassName('window-start-game')[0].style.display = 'none';\n        document.getElementsByClassName('body-game')[0].style.display = 'flex';\n\n        _this.game.start();\n      });\n    }\n  }]);\n\n  return Context;\n}(); //export default Context;\n\n\n\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/Context.js?");
+
+/***/ }),
+
+/***/ "./Scripts/myscripts/games/Game.js":
+/*!*****************************************!*\
+  !*** ./Scripts/myscripts/games/Game.js ***!
+  \*****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return Game; });\n/* harmony import */ var _AjaxRequest__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AjaxRequest */ \"./Scripts/myscripts/games/AjaxRequest.js\");\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\n\n\nvar Game =\n/*#__PURE__*/\nfunction () {\n  function Game() {\n    _classCallCheck(this, Game);\n\n    this.points = 0;\n    this.time = 15;\n    this.dictionary = null;\n    this.lenghtDictionary = 0;\n    this.getRaiting();\n  }\n\n  _createClass(Game, [{\n    key: \"start\",\n    value: function start() {\n      console.log('Начало игры(родительский класс)');\n    }\n  }, {\n    key: \"setDictionary\",\n    value: function setDictionary(dictionary) {\n      this.dictionary = dictionary;\n      this.lenghtDictionary = dictionary.length;\n    } //---------Определение текущего пользователя------------\n\n  }, {\n    key: \"getUserLogin\",\n    value: function getUserLogin() {\n      var url = \"\".concat(document.location.origin, \"/Account/CurrentUser\");\n      var method = 'Get';\n      var conn = new _AjaxRequest__WEBPACK_IMPORTED_MODULE_0__[\"default\"](url, method);\n      return conn.getJson().then(function (response) {\n        return response.UserLogin;\n      });\n    } //-------Получение словаря пользователя---------\n\n  }, {\n    key: \"getWordsFromDictionary\",\n    value: function getWordsFromDictionary() {\n      var user = this.getUserLogin();\n      return user.then(function (login) {\n        var url = \"\".concat(document.location.origin, \"/Games/GetExpressionTranslator?userName=\").concat(login);\n        var method = 'Get';\n        var conn = new _AjaxRequest__WEBPACK_IMPORTED_MODULE_0__[\"default\"](url, method);\n        return conn.getJson();\n      });\n    } //-------Проверка словаря----------\n\n  }, {\n    key: \"validation\",\n    value: function validation() {\n      console.log('валидация');\n\n      if (this.lengthDictionary === 0) {\n        this.message(\"Недостаточно слов в словаре\");\n        console.log(\"Недостаточно слов в словаре\");\n        return false;\n      }\n\n      return true;\n    } //-------Получить очки-----\n\n  }, {\n    key: \"getPoints\",\n    value: function getPoints() {\n      // return document.getElementById('points').innerText;\n      return this.points;\n    } //------Увеличить очки-----\n\n  }, {\n    key: \"upPoints\",\n    value: function upPoints() {\n      var points = document.getElementById('points').innerText;\n      this.points = this.points + 1;\n      console.log(\"\\u041F\\u043E\\u0432\\u044B\\u0448\\u0435\\u043D\\u0438\\u0435 \\u0431\\u0430\\u043B\\u043B\\u043E\\u0432 \".concat(this.points));\n      document.getElementById('points').innerText = this.points;\n    } //------Уменьшить очки------\n\n  }, {\n    key: \"downPoints\",\n    value: function downPoints() {\n      var points = document.getElementById('points').innerText;\n      this.points = this.points - 1;\n      document.getElementById('points').innerText = this.points;\n    } //-----Конец игры-------\n\n  }, {\n    key: \"endGame\",\n    value: function endGame() {\n      var _this = this;\n\n      var url = \"\".concat(document.location.origin, \"/Account/ChangeRaiting?raiting=\").concat(this.points);\n      var conn = new _AjaxRequest__WEBPACK_IMPORTED_MODULE_0__[\"default\"](url);\n      conn.getJson().then(function (raiting) {\n        console.log(\"\\u0438\\u0437\\u043C\\u0435\\u043D\\u0435\\u043D\\u0438\\u0435 \\u0440\\u0435\\u0439\\u0442\\u0438\\u043D\\u0433\\u0430: \".concat(raiting));\n      }).catch(function (err) {\n        _this.message('Рейтинг не изменен');\n\n        console.log(\"\\u0420\\u0435\\u0439\\u0442\\u0438\\u043D\\u0433 \\u043D\\u0435 \\u0438\\u0437\\u043C\\u0435\\u043D\\u0435\\u043D \".concat(err));\n      });\n      this.endGameDOM();\n    }\n  }, {\n    key: \"endGameDOM\",\n    value: function endGameDOM() {\n      document.getElementsByClassName('body-game')[0].style.display = 'none';\n      var endDOM = document.getElementById('end-game');\n      endDOM.style.display = 'flex';\n      endDOM.innerHTML = \"<div class='end-game-content'>\\u0418\\u0433\\u0440\\u0430 \\u043E\\u043A\\u043E\\u043D\\u0447\\u0435\\u043D\\u0430. <br> <span class=\\\"result-game-points\\\">\\u0423 \\u0432\\u0430\\u0441 \".concat(this.getPoints(), \" \\u0431\\u0430\\u043B\\u043B\\u0430</span><div>\");\n      var buttons = document.createElement('div');\n      buttons.className = 'button-end-options';\n      var reset = document.createElement('button');\n      reset.className = 'button-end';\n      reset.appendChild(document.createTextNode('Старт'));\n\n      reset.onclick = function () {\n        document.getElementById('button-start-game').click();\n        endDOM.style.display = 'none';\n        document.getElementsByClassName('body-game')[0].style.display = 'flex';\n      };\n\n      var redirect = document.createElement('button');\n      redirect.className = 'button-end';\n      redirect.appendChild(document.createTextNode('Выход'));\n\n      redirect.onclick = function () {\n        document.location = document.location.origin + '/Games';\n      };\n\n      buttons.appendChild(reset);\n      buttons.appendChild(redirect);\n      document.getElementsByClassName('end-game-content')[0].appendChild(buttons);\n    }\n  }, {\n    key: \"message\",\n    value: function message(text) {\n      document.getElementsByClassName('body-game')[0].style.display = 'none';\n      var endDOM = document.getElementById('message-game');\n      endDOM.style.display = 'flex';\n      endDOM.innerHTML = \"<div class='end-game-content'><span class=\\\"result-game-points\\\"> \".concat(text, \"</span><div>\");\n    }\n  }, {\n    key: \"shakeDictionary\",\n    value: function shakeDictionary() {\n      this.dictionary.sort(function () {\n        return Math.random() - 0.5;\n      });\n    }\n  }, {\n    key: \"shakeArray\",\n    value: function shakeArray(array) {\n      array.sort(function () {\n        return Math.random() - 0.5;\n      });\n    }\n  }, {\n    key: \"getRaiting\",\n    value: function getRaiting() {\n      var _this2 = this;\n\n      var url = \"\".concat(document.location.origin, \"/Account/GetRaiting\");\n      var conn = new _AjaxRequest__WEBPACK_IMPORTED_MODULE_0__[\"default\"](url);\n      conn.getJson().then(function (raiting) {\n        console.log(\"\\u0440\\u0435\\u0439\\u0442\\u0438\\u043D\\u0433 \".concat(raiting));\n        _this2.points = raiting;\n        document.getElementById('points').innerText = raiting;\n      }).catch(function (err) {\n        _this2.message('Рейтинг не получен');\n\n        console.log('Рейтинг не получен');\n      });\n    }\n  }]);\n\n  return Game;\n}(); //export default Game;\n\n\n\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/Game.js?");
+
+/***/ }),
+
+/***/ "./Scripts/myscripts/games/GameDragAndDrop.js":
+/*!****************************************************!*\
+  !*** ./Scripts/myscripts/games/GameDragAndDrop.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return DragAndDropGame; });\n/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Game */ \"./Scripts/myscripts/games/Game.js\");\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\n\n\nvar DragAndDropGame =\n/*#__PURE__*/\nfunction (_Game) {\n  _inherits(DragAndDropGame, _Game);\n\n  function DragAndDropGame() {\n    var _this;\n\n    _classCallCheck(this, DragAndDropGame);\n\n    _this = _possibleConstructorReturn(this, _getPrototypeOf(DragAndDropGame).call(this));\n    _this.stage = null;\n    _this.layer = null;\n    _this.limitWord = 5;\n    return _this;\n  } //---------Инициализация игры---------\n\n\n  _createClass(DragAndDropGame, [{\n    key: \"init\",\n    value: function init() {\n      document.getElementById('game-drag-and-drop').style.display = 'none';\n      document.getElementsByClassName('lds-default')[0].style.display = 'block';\n    } //---------Старт игры-------------\n\n  }, {\n    key: \"start\",\n    value: function start() {\n      var _this2 = this;\n\n      this.init();\n      console.log(\"Начало игры\");\n      var connDictionary = this.getWordsFromDictionary();\n      connDictionary.then(function (dictionary) {\n        _this2.processingDictionary(dictionary);\n\n        if (!_this2.validation()) return;\n\n        _this2.createKonva();\n\n        document.getElementById('game-drag-and-drop').style.display = 'block';\n        document.getElementsByClassName('lds-default')[0].style.display = 'none';\n      }).catch(function (error) {\n        return console.log(\" \\u041E\\u0448\\u0438\\u0431\\u043A\\u0430 \\u043F\\u0440\\u0438 \\u043E\\u0442\\u0440\\u0438\\u0441\\u043E\\u0432\\u043A\\u0438 \\u0438\\u0433\\u0440\\u044B \".concat(error));\n      });\n    } //--------Обработка данных словаря-----------\n\n  }, {\n    key: \"processingDictionary\",\n    value: function processingDictionary(dictionary) {\n      var _this3 = this;\n\n      this.setDictionary(dictionary);\n      this.shakeArray(this.dictionary);\n      this.setDictionary(dictionary.filter(function (item, index) {\n        if (index < _this3.limitWord) return item;\n      }));\n    } //--------Отрисовка прямоугольника с текстом-----------\n\n  }, {\n    key: \"drawRectangle\",\n    value: function drawRectangle(id, word) {\n      var color = ['#40667c', '#b86650', '#786d6a', '#C98832'];\n      var valueRandomColor = Math.floor(Math.random() * color.length);\n      var textOfWord = new Konva.Text({\n        text: word,\n        fontSize: 25,\n        fontFamily: 'Poiret One',\n        fill: '#fff',\n        padding: 20,\n        align: 'center'\n      });\n      var rect = new Konva.Rect({\n        strokeWidth: 1,\n        fill: color[valueRandomColor],\n        width: textOfWord.getWidth(),\n        height: textOfWord.getHeight(),\n        shadowColor: 'black',\n        shadowBlur: 10,\n        shadowOffset: [10, 10],\n        shadowOpacity: 0.1,\n        cornerRadius: 30\n      }); //определение положения фигуры\n\n      var x = Math.floor(Math.random() * (this.stage.width() - rect.getWidth() + 1));\n      var y = Math.floor(Math.random() * (this.stage.height() - rect.getHeight() + 1));\n      var group = new Konva.Group({\n        x: x,\n        y: y,\n        draggable: true,\n        name: id.toString()\n      });\n      group.add(rect, textOfWord);\n      return group;\n    } //--------Отрисовка словаря----------\n\n  }, {\n    key: \"drawDictionary\",\n    value: function drawDictionary() {\n      var _this4 = this;\n\n      var dictionary = this.dictionary;\n      dictionary.forEach(function (objectWord) {\n        var eng = objectWord.English;\n        var rus = objectWord.Russia;\n        var id = objectWord.Id;\n        console.log(eng + \" \" + rus);\n\n        var rectangleEng = _this4.drawRectangle(id, eng);\n\n        var rectangleRus = _this4.drawRectangle(id, rus);\n\n        _this4.layer.add(rectangleEng);\n\n        _this4.layer.add(rectangleRus);\n      });\n      this.layer.draw();\n    } //---------Отрисовка и определение игрового поля----------\n\n  }, {\n    key: \"createKonva\",\n    value: function createKonva() {\n      var stage = new Konva.Stage({\n        container: 'game-drag-and-drop',\n        width: document.getElementById('cont-game').offsetWidth,\n        height: document.getElementById('cont-game').offsetHeight\n      });\n      var layer = new Konva.Layer();\n      var tempLayer = new Konva.Layer();\n      var drop = false;\n      var that = this;\n      var previousShape;\n      var colorBack;\n      stage.add(layer);\n      stage.add(tempLayer);\n      this.stage = stage;\n      this.layer = layer;\n      this.drawDictionary(); //начало перемещение фигуры\n\n      stage.on(\"dragstart\", function (e) {\n        e.target.moveTo(tempLayer);\n        console.log('start'); //    text.text('Moving ' + e.target.name());\n\n        if (drop && previousShape) {\n          previousShape.fire('dragleave', {\n            type: 'dragleave',\n            target: previousShape,\n            evt: e.e\n          }, true);\n          previousShape = undefined;\n        }\n\n        layer.draw();\n      }); //движение фигуры\n\n      stage.on(\"dragmove\", function (evt) {\n        var pos = stage.getPointerPosition();\n        var shape = layer.getIntersection(pos, 'Group');\n        if (!previousShape && !shape) return;\n\n        if (previousShape && shape) {\n          if (previousShape !== shape) {\n            // leave from old targer\n            previousShape.fire('dragleave', {\n              type: 'dragleave',\n              target: previousShape,\n              evt: evt.evt\n            }, true); // enter new targer\n\n            shape.fire('dragenter', {\n              type: 'dragenter',\n              target: shape,\n              evt: evt.evt\n            }, true);\n            previousShape = shape;\n          } else {\n            previousShape.fire('dragover', {\n              type: 'dragover',\n              target: previousShape,\n              evt: evt.evt\n            }, true);\n          }\n        } else if (!previousShape && shape) {\n          previousShape = shape;\n          shape.fire('dragenter', {\n            type: 'dragenter',\n            target: shape,\n            evt: evt.evt\n          }, true);\n        } else if (previousShape && !shape) {\n          previousShape.fire('dragleave', {\n            type: 'dragleave',\n            target: previousShape,\n            evt: evt.evt\n          }, true);\n          previousShape = undefined;\n        } else return;\n      }); //опустить фигуру и закончить перемещение\n\n      stage.on(\"dragend\", function (e) {\n        console.log('end');\n\n        if (previousShape) {\n          if (previousShape.getName() === e.target.getName()) {\n            e.target.moveTo(layer);\n            e.target.destroy();\n            previousShape.destroy();\n            that.upPoints();\n            layer.draw();\n            tempLayer.draw();\n            that.checkEnd(layer, stage);\n            return;\n          } else {\n            that.downPoints();\n            previousShape.fire('drop', {\n              type: 'drop',\n              target: previousShape,\n              evt: e.evt\n            }, true);\n            drop = true;\n          }\n        }\n\n        e.target.moveTo(layer);\n        layer.draw();\n        tempLayer.draw();\n      }); //опустить фигуру на другую\n\n      stage.on(\"drop\", function (e) {\n        console.log('drop');\n        console.log(e.target);\n        var rectLower = e.target.getChildren()[0];\n        var text = e.target.getChildren()[1];\n        rectLower.fill('#772727'); //красный\n\n        text.fill('#772727'); //  text.text('drop ' + e.target.name());\n\n        layer.draw();\n      }); //начало перетаскивания\n\n      stage.on(\"dragenter\", function (e) {\n        console.log('enter');\n        var rectLower = e.target.getChildren()[0];\n        var text = e.target.getChildren()[1];\n        colorBack = rectLower.getAttr('fill');\n        text.fill('#966b6b');\n        rectLower.fill('#f5eecb');\n        layer.draw();\n      }); //перетаскивание с прикрытой фигуры и возвращение той в исх.состояние\n\n      stage.on(\"dragleave\", function (e) {\n        console.log('leave');\n        console.log(e.target);\n        var rectLower = e.target.getChildren()[0];\n        var text = e.target.getChildren()[1];\n        rectLower.fill(colorBack);\n        text.fill('white'); // text.text('dragleave ' + e.target.name());\n\n        layer.draw();\n      }); //другая фигура полностью покинута текущей\n\n      stage.on(\"dragover\", function (e) {\n        console.log('over'); // text.text('dragover ' + e.target.name());\n\n        layer.draw();\n      });\n    } //---------Проверка конца игры---------------\n\n  }, {\n    key: \"checkEnd\",\n    value: function checkEnd() {\n      var layer = this.layer;\n      console.log(layer.children.length);\n\n      if (layer.children.length === 0) {\n        console.log('Игра закончена');\n        this.stage.destroy();\n        this.endGame();\n      }\n    }\n  }]);\n\n  return DragAndDropGame;\n}(_Game__WEBPACK_IMPORTED_MODULE_0__[\"default\"]);\n\n\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/GameDragAndDrop.js?");
+
+/***/ }),
+
+/***/ "./Scripts/myscripts/games/GameExamplesSentences.js":
+/*!**********************************************************!*\
+  !*** ./Scripts/myscripts/games/GameExamplesSentences.js ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return PasteGame; });\n/* harmony import */ var _OxfordApi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OxfordApi */ \"./Scripts/myscripts/games/OxfordApi.js\");\n/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Game */ \"./Scripts/myscripts/games/Game.js\");\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction _get(target, property, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }\n\nfunction _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\n\n\n\nvar PasteGame =\n/*#__PURE__*/\nfunction (_Game) {\n  _inherits(PasteGame, _Game);\n\n  function PasteGame() {\n    var _this;\n\n    _classCallCheck(this, PasteGame);\n\n    _this = _possibleConstructorReturn(this, _getPrototypeOf(PasteGame).call(this));\n    _this.sentences = null;\n    _this.limitSentences = 3;\n    _this.limitWords = 5;\n    _this.answerButton = 0;\n    _this.currentWord = '';\n    _this.currentStep = 0;\n    return _this;\n  } //---------Инициализация шага игры---------\n\n\n  _createClass(PasteGame, [{\n    key: \"initStep\",\n    value: function initStep() {\n      this.sentences = null;\n      document.getElementById(\"body-third-game\").style.display = 'none';\n      document.getElementsByClassName('lds-default')[0].style.display = 'block';\n      var buttons = document.getElementsByClassName('button-options');\n\n      for (var i = 0; i < buttons.length; i++) {\n        buttons[i].classList.remove('wrong-button', 'success-button');\n      }\n    } //---------Старт игры-------------\n\n  }, {\n    key: \"start\",\n    value: function start() {\n      var _this2 = this;\n\n      _get(_getPrototypeOf(PasteGame.prototype), \"start\", this).call(this);\n\n      console.log(\"Начало игры\");\n      this.initStep(); //если словарь уже получен\n\n      if (this.dictionary) {\n        this.shakeArray(this.dictionary);\n        this.step(0);\n        return;\n      } //получение словаря\n\n\n      var connDictionary = this.getWordsFromDictionary();\n      connDictionary.then(function (dictionary) {\n        _this2.setDictionary(dictionary);\n\n        if (!_this2.validation()) {\n          return;\n        }\n\n        _this2.step(0);\n      }).catch(function (error) {\n        return console.log(\" \\u041E\\u0448\\u0438\\u0431\\u043A\\u0430 \\u043F\\u0440\\u0438 \\u043E\\u0442\\u0440\\u0438\\u0441\\u043E\\u0432\\u043A\\u0438 \\u0438\\u0433\\u0440\\u044B \".concat(error));\n      });\n    } //----------Шаг игры--------\n\n  }, {\n    key: \"step\",\n    value: function step(i) {\n      var _this3 = this;\n\n      if (i >= this.lenghtDictionary && i >= this.limitWords) {\n        this.endGame();\n        return;\n      }\n\n      this.currentStep = i;\n      var eng = this.currentWord = this.dictionary[i].English;\n      console.log(eng);\n      this.getSentense(eng).then(function (sentense) {\n        if (!sentense) {\n          _this3.initStep();\n\n          _this3.step(_this3.currentStep + 1);\n\n          return;\n        } //отрисовка текста\n\n\n        _this3.sentences = sentense;\n\n        _this3.drawStep(); //асинхронный запрос(ожидание,когда пользователь даст правильный ответ)\n\n\n        _this3.getAnswer().then(function () {\n          _this3.initStep();\n\n          _this3.step(_this3.currentStep + 1);\n        });\n      }).catch(function (err) {\n        console.log(err);\n      });\n    } //--------Получение предложений из Оксфордского словаря--------\n\n  }, {\n    key: \"getSentense\",\n    value: function getSentense(word) {\n      var connOxford = new _OxfordApi__WEBPACK_IMPORTED_MODULE_0__[\"default\"]();\n      return connOxford.getSentenseExemple(word).then(function (sentenses) {\n        if (!sentenses) return null;\n        return sentenses;\n      });\n    } //--------Асинхронная функция отслеживающая выбор правильного ответа----------\n\n  }, {\n    key: \"getAnswer\",\n    value: function getAnswer() {\n      var _this4 = this;\n\n      return new Promise(function (resolve) {\n        document.getElementsByClassName('button-options')[_this4.answerButton].onclick = function () {\n          _this4.upPoints();\n\n          resolve();\n        };\n      });\n    } //--------Cлучайное значение в массиве--------\n\n  }, {\n    key: \"getRandomValueArray\",\n    value: function getRandomValueArray(arr) {\n      var index = Math.floor(Math.random() * arr.length);\n      return arr[index];\n    } //-------Проверка словаря----------\n\n  }, {\n    key: \"validation\",\n    value: function validation() {\n      _get(_getPrototypeOf(PasteGame.prototype), \"validation\", this).call(this);\n\n      if (this.lengthDictionary <= 3) {\n        this.message('Недостаточно слов в словаре');\n        console.log(\"Недостаточно слов в словаре\");\n        return false;\n      }\n\n      return true;\n    } //*-------Работа с DOM-----------*\n    //--------Отрисовка шага-------------\n\n  }, {\n    key: \"drawStep\",\n    value: function drawStep() {\n      this.drawTextInDOM();\n      this.drawButtonInDOM();\n      document.getElementById(\"body-third-game\").style.display = 'block';\n      document.getElementsByClassName('lds-default')[0].style.display = 'none';\n    } //--------Отрисовка и обработка текста на поле---------------\n\n  }, {\n    key: \"drawTextInDOM\",\n    value: function drawTextInDOM() {\n      var _this5 = this;\n\n      var textDOM = document.getElementById('block-examples-texts');\n      var sentences = this.sentences;\n      var list = '';\n      var template = '<span class=\"find-word\">' + '_'.repeat(this.currentWord.length) + '</span>';\n      sentences = sentences.filter(function (item, index) {\n        return index < _this5.limitSentences;\n      });\n      sentences = sentences.map(function (item) {\n        return item.replace(new RegExp(_this5.currentWord.toLowerCase(), 'gi'), template);\n      });\n\n      for (var i = 0; i < sentences.length; i++) {\n        list += \"<li>\".concat(sentences[i], \"</li>\");\n      }\n\n      textDOM.innerHTML = \"<ul> \".concat(list, \" </ul>\");\n    } //--------Отрисовка кнопоки с правильным ответом-------\n\n  }, {\n    key: \"drawCorrectButton\",\n    value: function drawCorrectButton() {\n      var buttonWithCurrentWord = document.getElementsByClassName('button-options')[this.answerButton];\n      buttonWithCurrentWord.innerText = this.currentWord;\n    } //--------Отрисовка кнопоки с неправильным ответом-------\n\n  }, {\n    key: \"drawWrongButton\",\n    value: function drawWrongButton(number, word) {\n      var _this6 = this;\n\n      var buttonWithRandomWord = document.getElementsByClassName('button-options')[number];\n      buttonWithRandomWord.innerText = word;\n\n      buttonWithRandomWord.onclick = function () {\n        _this6.downPoints();\n\n        buttonWithRandomWord.classList.add('wrong-button');\n      };\n    } //--------Отрисовка кнопок c ответами-----------\n\n  }, {\n    key: \"drawButtonInDOM\",\n    value: function drawButtonInDOM() {\n      var orderButton = [0, 1, 2];\n      this.shakeArray(orderButton);\n      this.answerButton = orderButton[0]; //выбор 2х случайных слов из словоря:\n\n      var word1 = this.currentWord;\n      var word2 = this.currentWord;\n\n      while (word1 === this.currentWord) {\n        word1 = this.getRandomValueArray(this.dictionary).English;\n      }\n\n      while (word2 === this.currentWord || word2 === word1) {\n        word2 = this.getRandomValueArray(this.dictionary).English;\n      }\n\n      this.drawCorrectButton();\n      this.drawWrongButton(orderButton[1], word1);\n      this.drawWrongButton(orderButton[2], word2);\n    }\n  }]);\n\n  return PasteGame;\n}(_Game__WEBPACK_IMPORTED_MODULE_1__[\"default\"]);\n\n\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/GameExamplesSentences.js?");
+
+/***/ }),
+
+/***/ "./Scripts/myscripts/games/GameWordTranslation.js":
+/*!********************************************************!*\
+  !*** ./Scripts/myscripts/games/GameWordTranslation.js ***!
+  \********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return WordTranslationGame; });\n/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Game */ \"./Scripts/myscripts/games/Game.js\");\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction _get(target, property, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }\n\nfunction _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\n\n\nvar WordTranslationGame =\n/*#__PURE__*/\nfunction (_Game) {\n  _inherits(WordTranslationGame, _Game);\n\n  function WordTranslationGame() {\n    var _this;\n\n    _classCallCheck(this, WordTranslationGame);\n\n    _this = _possibleConstructorReturn(this, _getPrototypeOf(WordTranslationGame).call(this));\n    _this.currentStep = 0;\n    _this.currentTimer = 0;\n    _this.currentWord = '';\n    _this.limitWords = 5;\n    document.getElementsByClassName('button-next')[0].onclick = _this.nextStep.bind(_assertThisInitialized(_this));\n    document.getElementById('user-input').onkeyup = _this.equalWord.bind(_assertThisInitialized(_this));\n    return _this;\n  } //---------Инициализация игры---------\n\n\n  _createClass(WordTranslationGame, [{\n    key: \"init\",\n    value: function init() {\n      this.drawPreloaderDOM(true);\n      this.currentStep = 0;\n      clearInterval(this.currentTimer);\n    } //---------Проверка равенства введенного слова и слова-аудио------\n\n  }, {\n    key: \"equalWord\",\n    value: function equalWord() {\n      var inputDOM = document.getElementById('user-input');\n\n      if (this.currentWord.Russia.toLowerCase() === inputDOM.value.toLowerCase()) {\n        this.upPoints();\n        this.nextStep();\n        return;\n      }\n    } //---------Следующий шаг игры-----\n\n  }, {\n    key: \"nextStep\",\n    value: function nextStep() {\n      clearInterval(this.currentTimer);\n      console.log(\"currentStep = \".concat(this.currentStep));\n      this.stepWithInterval(this.currentStep + 1);\n    } //---------Старт игры-------------\n\n  }, {\n    key: \"start\",\n    value: function start() {\n      var _this2 = this;\n\n      _get(_getPrototypeOf(WordTranslationGame.prototype), \"start\", this).call(this);\n\n      this.init();\n      console.log(\"Начало игры\"); //если словарь уже получен\n\n      if (this.dictionary) {\n        this.shakeArray(this.dictionary);\n        this.drawPreloaderDOM(false);\n        this.stepWithInterval(0);\n        return;\n      } //получение словаря\n\n\n      var connDictionary = this.getWordsFromDictionary();\n      connDictionary.then(function (dictionary) {\n        _this2.setDictionary(dictionary);\n\n        if (!_this2.validation()) return;\n\n        _this2.drawPreloaderDOM(false);\n\n        _this2.stepWithInterval(0);\n      }).catch(function (error) {\n        _this2.message('Технические неполадки. Зайдите позже.');\n\n        console.log(\" \\u041E\\u0448\\u0438\\u0431\\u043A\\u0430 \\u043F\\u0440\\u0438 \\u043E\\u0442\\u0440\\u0438\\u0441\\u043E\\u0432\\u043A\\u0438 \\u0438\\u0433\\u0440\\u044B \".concat(error));\n      });\n    } //-----Инициализация таймера-----\n\n  }, {\n    key: \"setTimerDOM\",\n    value: function setTimerDOM() {\n      var timerInDOM = document.getElementById('timer');\n      timerInDOM.innerText = this.time;\n      timerInDOM.className = '';\n    } //------Инициализации карточки с английским словом-------\n\n  }, {\n    key: \"setEnglishTextDOM\",\n    value: function setEnglishTextDOM() {\n      var engDOM = document.getElementById('card-eng');\n      engDOM.innerText = this.currentWord.English;\n    } //----------Шаг игры--------\n\n  }, {\n    key: \"stepWithInterval\",\n    value: function stepWithInterval(i) {\n      this.currentStep = i;\n      document.getElementById('user-input').value = '';\n      this.currentWord = this.dictionary[i];\n\n      if (i < this.lenghtDictionary && i < this.limitWords) {\n        this.setEnglishTextDOM();\n        this.timer();\n      } else {\n        this.endGame();\n      }\n    } //-------Работа таймера и проверка ответа(замыкание)-------\n\n  }, {\n    key: \"timer\",\n    value: function timer() {\n      var _this3 = this;\n\n      var time = this.time;\n      var timerInDOM = document.getElementById('timer');\n      this.setTimerDOM();\n      this.currentTimer = setInterval(function () {\n        --time;\n        console.log(\"\\u0432\\u0440\\u0435\\u043C\\u044F \".concat(time, \"; i= \\u043F\\u0435\\u0440\\u0435\\u0432\\u043E\\u0434=\").concat(_this3.currentWord.Russia, \" \").concat(_this3.currentTimer));\n        timerInDOM.innerText = time;\n\n        if (time === 3) {\n          timerInDOM.className = 'red-text';\n        }\n\n        if (time <= 0) {\n          _this3.downPoints();\n\n          clearInterval(_this3.currentTimer);\n\n          _this3.stepWithInterval(_this3.currentStep + 1);\n\n          return;\n        }\n      }, 1000);\n    } //------Отрисовка прелоадера-------\n\n  }, {\n    key: \"drawPreloaderDOM\",\n    value: function drawPreloaderDOM(load) {\n      if (load) {\n        document.getElementsByClassName('body-word-translation-game')[0].style.display = 'none';\n        document.getElementsByClassName('lds-default')[0].style.display = 'block';\n      } else {\n        document.getElementsByClassName('body-word-translation-game')[0].style.display = 'flex';\n        document.getElementsByClassName('lds-default')[0].style.display = 'none';\n      }\n    }\n  }]);\n\n  return WordTranslationGame;\n}(_Game__WEBPACK_IMPORTED_MODULE_0__[\"default\"]);\n\n\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/GameWordTranslation.js?");
+
+/***/ }),
+
+/***/ "./Scripts/myscripts/games/ListeningGame.js":
+/*!**************************************************!*\
+  !*** ./Scripts/myscripts/games/ListeningGame.js ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return ListeningGame; });\n/* harmony import */ var _OxfordApi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OxfordApi */ \"./Scripts/myscripts/games/OxfordApi.js\");\n/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Game */ \"./Scripts/myscripts/games/Game.js\");\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction _get(target, property, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }\n\nfunction _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\n\n\n\nvar ListeningGame =\n/*#__PURE__*/\nfunction (_Game) {\n  _inherits(ListeningGame, _Game);\n\n  function ListeningGame() {\n    var _this;\n\n    _classCallCheck(this, ListeningGame);\n\n    _this = _possibleConstructorReturn(this, _getPrototypeOf(ListeningGame).call(this));\n    _this.audioArray = [];\n    _this.currentWord = '';\n    _this.currentStep = 0;\n    _this.currentTimer = 0;\n    _this.limitAudio = 5;\n    document.getElementsByClassName('button-next')[0].onclick = _this.nextStep.bind(_assertThisInitialized(_this));\n    document.getElementById('user-input').onkeyup = _this.equalWord.bind(_assertThisInitialized(_this));\n    return _this;\n  } //---------Инициализация игры---------\n\n\n  _createClass(ListeningGame, [{\n    key: \"init\",\n    value: function init() {\n      this.drawPreloaderDOM(true);\n      this.currentStep = 0;\n      clearInterval(this.currentTimer);\n    } //---------Старт игры-------------\n\n  }, {\n    key: \"start\",\n    value: function start() {\n      var _this2 = this;\n\n      _get(_getPrototypeOf(ListeningGame.prototype), \"start\", this).call(this);\n\n      this.init();\n      console.log(\"Начало игры\"); //если аудио уже были получены\n\n      if (this.audioArray.length > 0) {\n        this.shakeArray(this.audioArray);\n        this.drawPreloaderDOM(false);\n        this.stepWithInterval(0);\n        return;\n      } //получение аудио из словаря\n\n\n      var connDictionary = this.getWordsFromDictionary();\n      connDictionary.then(function (dictionary) {\n        _this2.getAllAudio(dictionary).then(function (result) {\n          if (_this2.audioArray.length === 0) {\n            _this2.message('Недостаточно слов для игры. Пополните словарь.');\n\n            return;\n          }\n\n          _this2.drawPreloaderDOM(false);\n\n          _this2.stepWithInterval(0);\n        });\n      }).catch(function (error) {\n        console.log(\" \\u041E\\u0448\\u0438\\u0431\\u043A\\u0430:\".concat(error));\n\n        _this2.message('Технические неполадки. Зайдите позже.');\n      });\n    } //---------Сохранение аудио-------\n\n  }, {\n    key: \"setAudioArray\",\n    value: function setAudioArray(word, audio) {\n      this.audioArray.push({\n        'word': word,\n        'audio': audio\n      });\n    } //---------Получение всех аудио----\n\n  }, {\n    key: \"getAllAudio\",\n    value: function getAllAudio(dictionary) {\n      var _this3 = this;\n\n      return new Promise(function (resolve, reject) {\n        var promises = [];\n\n        try {\n          var connOxford = new _OxfordApi__WEBPACK_IMPORTED_MODULE_0__[\"default\"]();\n          dictionary.forEach(function (word) {\n            word = word.English;\n            promises.push(connOxford.getAudioExemple(word).then(function (audio) {\n              if (!audio) {\n                console.log('аудио пропущено');\n                return;\n              } else _this3.setAudioArray(word, audio);\n            }));\n          });\n          Promise.all(promises).then(function () {\n            return resolve(true);\n          });\n        } catch (e) {\n          reject(e);\n        }\n      });\n    } //---------Следующий шаг игры-----\n\n  }, {\n    key: \"nextStep\",\n    value: function nextStep() {\n      clearInterval(this.currentTimer);\n      console.log(\"currentStep = \".concat(this.currentStep));\n      this.stepWithInterval(this.currentStep + 1);\n    } //---------Проверка равенства введенного слова и слова-аудио------\n\n  }, {\n    key: \"equalWord\",\n    value: function equalWord() {\n      var inputDOM = document.getElementById('user-input');\n\n      if (this.currentWord.toLowerCase() === inputDOM.value.toLowerCase()) {\n        this.upPoints();\n        this.nextStep();\n        return;\n      }\n    } //---------Работа таймера-------\n\n  }, {\n    key: \"timer\",\n    value: function timer() {\n      var _this4 = this;\n\n      var time = this.time;\n      var timerInDOM = document.getElementById('timer');\n      this.setTimerDOM();\n      this.currentTimer = setInterval(function () {\n        --time;\n        timerInDOM.innerText = time;\n\n        if (time === 3) {\n          timerInDOM.className = 'red-text';\n        }\n\n        if (time <= 0) {\n          _this4.downPoints();\n\n          _this4.nextStep();\n\n          return;\n        }\n      }, 1000);\n    } //---------Шаг игры--------\n\n  }, {\n    key: \"stepWithInterval\",\n    value: function stepWithInterval(i) {\n      if (i === 0) console.log(this.audioArray);\n      this.currentStep = i;\n      document.getElementById('user-input').value = '';\n\n      if (i < this.audioArray.length && i < this.limitAudio) {\n        console.log(\"\\u0448\\u0430\\u0433 \".concat(i));\n        var object = this.audioArray[i];\n        this.setAudioDOM(object.audio);\n        this.currentWord = object.word;\n        this.timer();\n      } else {\n        this.endGame();\n      }\n    } //*-------Работа с DOM-----------*\n    //------Отрисовка прелоадера-------\n\n  }, {\n    key: \"drawPreloaderDOM\",\n    value: function drawPreloaderDOM(load) {\n      if (load) {\n        document.getElementsByClassName('body-audio-game')[0].style.display = 'none';\n        document.getElementsByClassName('lds-default')[0].style.display = 'block';\n      } else {\n        document.getElementsByClassName('body-audio-game')[0].style.display = 'flex';\n        document.getElementsByClassName('lds-default')[0].style.display = 'none';\n      }\n    } //-------Установка аудио----------\n\n  }, {\n    key: \"setAudioDOM\",\n    value: function setAudioDOM(audio) {\n      var audioDOM = document.getElementById('audio-eng');\n      audioDOM.src = audio;\n      audioDOM.play();\n    } //-----Инициализация таймера-----\n\n  }, {\n    key: \"setTimerDOM\",\n    value: function setTimerDOM() {\n      var timerInDOM = document.getElementById('timer');\n      timerInDOM.innerText = this.time;\n      timerInDOM.className = '';\n    }\n  }]);\n\n  return ListeningGame;\n}(_Game__WEBPACK_IMPORTED_MODULE_1__[\"default\"]);\n\n\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/ListeningGame.js?");
+
+/***/ }),
+
+/***/ "./Scripts/myscripts/games/OxfordApi.js":
+/*!**********************************************!*\
+  !*** ./Scripts/myscripts/games/OxfordApi.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return OxfordApi; });\n/* harmony import */ var _AjaxRequest__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AjaxRequest */ \"./Scripts/myscripts/games/AjaxRequest.js\");\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\n//получение текста из запроса к оксфордскому словарю\n\n\nvar OxfordApi =\n/*#__PURE__*/\nfunction () {\n  function OxfordApi() {\n    _classCallCheck(this, OxfordApi);\n\n    this.urlServerAudio = \"\".concat(document.location.origin, \"/Games/OxfordAudio\");\n    this.urlSeverSentense = \"\".concat(document.location.origin, \"/Games/OxfordSentense\");\n  } //получение примеров предложений\n\n\n  _createClass(OxfordApi, [{\n    key: \"getSentenseExemple\",\n    value: function getSentenseExemple(word) {\n      var sentense = [];\n      var urlServer = \"\".concat(this.urlSeverSentense, \"?word=\").concat(word.toLowerCase());\n      var conn = new _AjaxRequest__WEBPACK_IMPORTED_MODULE_0__[\"default\"](urlServer, this.method);\n      return conn.getJson().then(function (response) {\n        if (response === \"word not found\") return null;\n        var responseJson = JSON.parse(response);\n        responseJson = responseJson.results[0].lexicalEntries[0].sentences;\n        responseJson.forEach(function (item) {\n          sentense.push(item.text);\n        });\n        return sentense;\n      });\n    }\n  }, {\n    key: \"getAudioExemple\",\n    value: function getAudioExemple(word) {\n      var urlAudio = '';\n      var urlServer = this.urlServerAudio + '?word=' + word;\n      var conn = new _AjaxRequest__WEBPACK_IMPORTED_MODULE_0__[\"default\"](urlServer, this.method);\n      return conn.getJson().then(function (response) {\n        if (response === \"audio not found\") return null;\n        var responseJson = JSON.parse(response);\n        urlAudio = responseJson.results[0].lexicalEntries[0].pronunciations[0].audioFile;\n        console.log(responseJson);\n        return urlAudio;\n      });\n    }\n  }]);\n\n  return OxfordApi;\n}();\n\n\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/OxfordApi.js?");
+
+/***/ }),
+
+/***/ "./Scripts/myscripts/games/SpeechGame.js":
+/*!***********************************************!*\
+  !*** ./Scripts/myscripts/games/SpeechGame.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return SpeechGame; });\n/* harmony import */ var _AjaxRequest__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AjaxRequest */ \"./Scripts/myscripts/games/AjaxRequest.js\");\n/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Game */ \"./Scripts/myscripts/games/Game.js\");\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\n\n\n\nvar SpeechGame =\n/*#__PURE__*/\nfunction (_Game) {\n  _inherits(SpeechGame, _Game);\n\n  function SpeechGame() {\n    var _this;\n\n    _classCallCheck(this, SpeechGame);\n\n    _this = _possibleConstructorReturn(this, _getPrototypeOf(SpeechGame).call(this));\n    _this.currentText = '';\n    _this.currentRecognition = null;\n    _this.limitSymbolsSentense = 300;\n    _this.currentStep = 0;\n    _this.limitStep = 5;\n    _this.stopWithoutResult = false;\n    document.getElementById('stop-speech').onclick = _this.stop.bind(_assertThisInitialized(_this));\n    document.getElementById('next-text-speech').onclick = _this.nextStep.bind(_assertThisInitialized(_this));\n    return _this;\n  } //---------Старт игры-------------\n\n\n  _createClass(SpeechGame, [{\n    key: \"start\",\n    value: function start() {\n      this.step(0);\n    } //------Следующий шаг игры----------\n\n  }, {\n    key: \"nextStep\",\n    value: function nextStep() {\n      this.clear();\n      this.step(this.currentStep + 1);\n      document.getElementById('next-text-speech').style.display = 'none';\n      document.getElementById('stop-speech').style.display = 'inline-block';\n    } //------Стоп----------\n\n  }, {\n    key: \"stop\",\n    value: function stop() {\n      document.getElementById('stop-speech').style.display = 'none';\n      document.getElementById('next-text-speech').style.display = 'inline-block';\n      this.currentRecognition.stop();\n    } //---------Шаг игры--------\n\n  }, {\n    key: \"step\",\n    value: function step(i) {\n      var _this2 = this;\n\n      this.currentStep = i;\n      if (i >= this.limitStep) return this.endGame();\n      this.getText().then(function (text) {\n        var initialText = _this2.currentText = text;\n\n        _this2.updateTextDOM();\n\n        if (!_this2.currentText) return _this2.message('Технические неполадки. Извините');\n\n        _this2.recognizer().then(function (recordText) {\n          var result = _this2.findCoincidences(initialText, recordText);\n\n          document.getElementsByClassName('result-speech')[0].innerHTML = 'Вы прочитали текст: ' + '<span id=\"result-speech-level\">' + result + '</span>';\n        }).catch(function (error) {\n          return console.log(\"\\u043E\\u0448\\u0438\\u0431\\u043A\\u0430 \\u043F\\u0440\\u0438 \\u0440\\u0430\\u0441\\u043F\\u043E\\u0437\\u043D\\u043E\\u0432\\u0430\\u043D\\u0438\\u0438 \\u0433\\u043E\\u043B\\u043E\\u0441\\u0430: \".concat(error));\n        });\n      }).catch(function (error) {\n        return _this2.message(error);\n      });\n    } //---------Распознование речи------------\n\n  }, {\n    key: \"recognizer\",\n    value: function recognizer() {\n      var _this3 = this;\n\n      var resultText = '';\n      var preloaderDOM = document.getElementsByClassName('container')[0];\n      preloaderDOM.style.display = 'flex';\n      return new Promise(function (resolve, reject) {\n        if ('webkitSpeechRecognition' in window) {\n          var recognition = _this3.currentRecognition = new webkitSpeechRecognition();\n          recognition.lang = 'en';\n          recognition.continuous = true;\n\n          recognition.onresult = function (event) {\n            var result = event.results[event.resultIndex];\n            resultText += result[0].transcript;\n            console.log(result[0].transcript);\n          };\n\n          recognition.onend = function () {\n            console.log('Распознавание завершилось.');\n            preloaderDOM.style.display = 'none';\n\n            if (document.getElementById('stop-speech').style.display !== 'none') {\n              document.getElementById('stop-speech').style.display = 'none';\n              document.getElementById('next-text-speech').style.display = 'inline-block';\n            }\n\n            resolve(resultText);\n          }.bind(_this3);\n\n          recognition.start();\n        } else {\n          reject('webkitSpeechRecognition не поддерживается :(');\n        }\n      });\n    } //---------Получение книги-------------\n\n  }, {\n    key: \"getBook\",\n    value: function getBook() {\n      var url = \"\".concat(document.location.origin, \"/Games/GetBookAsync\");\n      var method = 'GET';\n      var conn = new _AjaxRequest__WEBPACK_IMPORTED_MODULE_0__[\"default\"](url, method);\n      return conn.getJson();\n    } //--------Обработка текста из книги---------------\n\n  }, {\n    key: \"bookProcessing\",\n    value: function bookProcessing(book) {\n      var regexp = /[.?!]/ig;\n      var index;\n      book = book.replace(/\\s{2,}/g, \" \"); //удаление лишних пробелов\n\n      index = Math.floor(Math.random() * book.length - this.limitSymbolsSentense);\n      index = book.indexOf('.', index) + 1;\n      var pieceBook = book.slice(index, index + this.limitSymbolsSentense);\n\n      for (var res; res = regexp.exec(pieceBook);) {\n        index = res.index;\n      }\n\n      pieceBook = pieceBook.slice(0, index + 1);\n      return pieceBook;\n    } //--------Получение текста из книги-------------\n\n  }, {\n    key: \"getText\",\n    value: function getText() {\n      var _this4 = this;\n\n      return new Promise(function (resolve, reject) {\n        _this4.getBook().then(function (book) {\n          book = _this4.bookProcessing(book);\n          resolve(book);\n        }).catch(function (error) {\n          console.log(\"\\u041E\\u0448\\u0438\\u0431\\u043A\\u0430 \\u043F\\u0440\\u0438 \\u043D\\u0430\\u0445\\u043E\\u0436\\u0434\\u0435\\u043D\\u0438\\u0438 \\u0442\\u0435\\u043A\\u0441\\u0442\\u0430 \".concat(error));\n          reject(\"\\u0418\\u0437\\u0432\\u0438\\u043D\\u0438\\u0442\\u0435, \\u0442\\u0435\\u043A\\u0441\\u0442 \\u043D\\u0435 \\u043C\\u043E\\u0436\\u0435\\u0442 \\u0431\\u044B\\u0442\\u044C \\u0437\\u0430\\u0433\\u0440\\u0443\\u0436\\u0435\\u043D\");\n        });\n      });\n    } //----------Сравнение текстов-----------//\n    //-------Обработка текста-----------\n\n  }, {\n    key: \"textProcessing\",\n    value: function textProcessing(text) {\n      text = text.trim();\n      text = text.toLowerCase();\n      text = text.replace(/[.+,\\/#!$%\\^&\\*;:{}=\\-_`…\\'’‘“”—–?~()]/g, \"\"); //удаление знаков препинани\n\n      text = text.replace(/\\s{2,}/g, \" \"); //удаление лишних пробелов\n\n      return text;\n    } //-------Перевод процентов в уровень-------\n\n  }, {\n    key: \"percentToLevel\",\n    value: function percentToLevel(percent) {\n      switch (true) {\n        case percent === 0:\n          return 'Ужасно';\n\n        case percent > 0 && percent < 30:\n          return 'Плохо';\n\n        case percent >= 30 && percent < 50:\n          return 'Нормально';\n\n        case percent >= 50 && percent < 70:\n          return 'Хорошо';\n\n        case percent >= 70 && percent < 90:\n          return 'Отлично';\n\n        case percent >= 90 && percent <= 100:\n          return 'Безупречно';\n\n        default:\n          return 'Ошибка в распозновании';\n      }\n    } //-------Сравнение текстов и вывод результата совпадения-----------\n\n  }, {\n    key: \"findCoincidences\",\n    value: function findCoincidences(textInput, textRecord) {\n      var str1 = this.textProcessing(textInput);\n      var str2 = this.textProcessing(textRecord);\n      var percent, equal, levenshteinDistance, result;\n      var maxLength = str1.length > str2.length ? str1.length : str2.length;\n      console.log(str1);\n      console.log(str2);\n      levenshteinDistance = this.levenshtein(str1, str2); //число совпавших символов\n\n      equal = maxLength - levenshteinDistance;\n      percent = !levenshteinDistance ? 100 : Math.round(100 * equal / maxLength);\n      console.log(\"\\u041F\\u0440\\u043E\\u0446\\u0435\\u043D\\u0442\\u044B \".concat(percent));\n      percent >= 50 ? this.upPoints() : this.downPoints();\n      result = this.percentToLevel(percent);\n      return result;\n    } //---------Алгоритм нахождения совпадения оригинального текста и распознанного текста(Левенштейна)---------\n\n  }, {\n    key: \"levenshtein\",\n    value: function levenshtein(s1, s2, costs) {\n      var i, j, l1, l2, flip, ch, chl, ii, ii2, cost, cutHalf;\n      l1 = s1.length;\n      l2 = s2.length;\n      costs = costs || {};\n      var cr = costs.replace || 1;\n      var cri = costs.replaceCase || costs.replace || 1;\n      var ci = costs.insert || 1;\n      var cd = costs.remove || 1;\n      cutHalf = flip = Math.max(l1, l2);\n      var minCost = Math.min(cd, ci, cr);\n      var minD = Math.max(minCost, (l1 - l2) * cd);\n      var minI = Math.max(minCost, (l2 - l1) * ci);\n      var buf = new Array(cutHalf * 2 - 1);\n\n      for (i = 0; i <= l2; ++i) {\n        buf[i] = i * minD;\n      }\n\n      for (i = 0; i < l1; ++i, flip = cutHalf - flip) {\n        ch = s1[i];\n        chl = ch.toLowerCase();\n        buf[flip] = (i + 1) * minI;\n        ii = flip;\n        ii2 = cutHalf - flip;\n\n        for (j = 0; j < l2; ++j, ++ii, ++ii2) {\n          cost = ch === s2[j] ? 0 : chl === s2[j].toLowerCase() ? cri : cr;\n          buf[ii + 1] = Math.min(buf[ii2 + 1] + cd, buf[ii] + ci, buf[ii2] + cost);\n        }\n      }\n\n      return buf[l2 + cutHalf - flip];\n    } //------------Работа с DOM-----------//\n    //------Отрисовка текста в DOM--------\n\n  }, {\n    key: \"updateTextDOM\",\n    value: function updateTextDOM() {\n      document.getElementsByClassName('lds-default')[0].style.display = 'none';\n      document.getElementsByClassName('text-speech')[0].innerText = this.currentText;\n    } //------Очищение поля----------\n\n  }, {\n    key: \"clear\",\n    value: function clear() {\n      this.currentRecognition = null;\n      document.getElementsByClassName('result-speech')[0].innerText = '';\n      document.getElementsByClassName('text-speech')[0].innerText = '';\n      document.getElementsByClassName('lds-default')[0].style.display = 'block';\n    }\n  }]);\n\n  return SpeechGame;\n}(_Game__WEBPACK_IMPORTED_MODULE_1__[\"default\"]);\n\n\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/SpeechGame.js?");
+
+/***/ }),
 
 /***/ "./Scripts/myscripts/games/index.js":
 /*!******************************************!*\
   !*** ./Scripts/myscripts/games/index.js ***!
   \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-eval("function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\n/* import Context from './Context';\r\nimport DragAndDropGame from './GameDragAndDrop';\r\nimport WordTranslationGame from './GameWordTranslation';\r\nimport ExampleSentencesGame from './GameExamplesSentences';\r\nimport SpeechGame from './GameSpeech';\r\nimport AudioTranslationGame from './GameAudioTranslation';\r\nimport routes from './route';\r\n*/\nvar Main =\n/*#__PURE__*/\nfunction () {\n  function Main() {\n    _classCallCheck(this, Main);\n  }\n\n  _createClass(Main, [{\n    key: \"run\",\n    value: function run() {\n      var currentPathName = document.location.pathname;\n      var action = routes[currentPathName];\n      var context = new Context();\n      console.log(\"\\u0422\\u0435\\u043A\\u0443\\u0449\\u0435\\u0435 \\u0434\\u0435\\u0439\\u0441\\u0442\\u0432\\u0438\\u0435: \".concat(action));\n\n      switch (action) {\n        case \"dragAndDrop\":\n          context.setGame(new DragAndDropGame());\n          console.log(\"dragAndDrop\");\n          break;\n\n        case \"wordTranslation\":\n          context.setGame(new WordTranslationGame());\n          console.log(\"wordTranslation\");\n          break;\n\n        case \"exampleSentences\":\n          context.setGame(new ExampleSentencesGame());\n          console.log(\"context\");\n          break;\n\n        case \"speech\":\n          context.setGame(new SpeechGame());\n          break;\n\n        case \"audioTranslation\":\n          context.setGame(new AudioTranslationGame());\n          console.log(\"audioTranslation\");\n          break;\n\n        default:\n          console.log(\"Такой игры нет\");\n      }\n\n      if (context.game) context.startGame();\n    }\n  }]);\n\n  return Main;\n}();\n\nvar main = new Main();\nmain.run();\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/index.js?");
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _Context__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Context */ \"./Scripts/myscripts/games/Context.js\");\n/* harmony import */ var _route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./route */ \"./Scripts/myscripts/games/route.js\");\n/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Game */ \"./Scripts/myscripts/games/Game.js\");\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\n\n\n\n\nvar Main =\n/*#__PURE__*/\nfunction () {\n  function Main() {\n    _classCallCheck(this, Main);\n\n    this.currentPathName = document.location.pathname;\n    this.action = null;\n    this.context = null;\n  }\n\n  _createClass(Main, [{\n    key: \"run\",\n    value: function run() {\n      var context = new _Context__WEBPACK_IMPORTED_MODULE_0__[\"default\"]();\n      this.action = _route__WEBPACK_IMPORTED_MODULE_1__[\"default\"][this.currentPathName];\n      this.action ? context.setGame(new this.action()) : context.setGame(new _Game__WEBPACK_IMPORTED_MODULE_2__[\"default\"]());\n      context.startGame();\n    }\n  }]);\n\n  return Main;\n}();\n\nvar main = new Main();\nmain.run();\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/index.js?");
+
+/***/ }),
+
+/***/ "./Scripts/myscripts/games/route.js":
+/*!******************************************!*\
+  !*** ./Scripts/myscripts/games/route.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _GameDragAndDrop__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GameDragAndDrop */ \"./Scripts/myscripts/games/GameDragAndDrop.js\");\n/* harmony import */ var _GameWordTranslation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GameWordTranslation */ \"./Scripts/myscripts/games/GameWordTranslation.js\");\n/* harmony import */ var _GameExamplesSentences__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./GameExamplesSentences */ \"./Scripts/myscripts/games/GameExamplesSentences.js\");\n/* harmony import */ var _SpeechGame__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SpeechGame */ \"./Scripts/myscripts/games/SpeechGame.js\");\n/* harmony import */ var _ListeningGame__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ListeningGame */ \"./Scripts/myscripts/games/ListeningGame.js\");\n\n\n\n\n\nvar routes = {\n  \"/Games/DragAndDrops\": _GameDragAndDrop__WEBPACK_IMPORTED_MODULE_0__[\"default\"],\n  \"/Games/WordTranslationGame\": _GameWordTranslation__WEBPACK_IMPORTED_MODULE_1__[\"default\"],\n  \"/Games/ExampleSentencesGame\": _GameExamplesSentences__WEBPACK_IMPORTED_MODULE_2__[\"default\"],\n  \"/Games/SpeechGame\": _SpeechGame__WEBPACK_IMPORTED_MODULE_3__[\"default\"],\n  \"/Games/AudioGame\": _ListeningGame__WEBPACK_IMPORTED_MODULE_4__[\"default\"]\n};\n/* harmony default export */ __webpack_exports__[\"default\"] = (routes);\n\n//# sourceURL=webpack:///./Scripts/myscripts/games/route.js?");
 
 /***/ })
 

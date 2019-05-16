@@ -1,8 +1,7 @@
-﻿//import OxfordApi from './OxfordApi'
-//import Game from './Game';
+﻿import OxfordApi from './OxfordApi'
+import Game from './Game';
 
-//export default
-class ExampleSentencesGame extends Game {
+export default class PasteGame extends Game {
 
     constructor() {
         super();

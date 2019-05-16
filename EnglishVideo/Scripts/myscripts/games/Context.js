@@ -1,6 +1,4 @@
-﻿
-//export default
-    class Context {
+﻿export default class Context {
 
     constructor() {
      this.game = null;
@@ -11,6 +9,8 @@
     }
 
     startGame() {
+        if (!document.getElementById('button-start-game'))
+            return;
         document.getElementById('button-start-game').addEventListener('click', () => {
             document.getElementsByClassName('window-start-game')[0].style.display = 'none';
             document.getElementsByClassName('body-game')[0].style.display = 'flex';
